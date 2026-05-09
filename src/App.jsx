@@ -8,8 +8,7 @@ import { PopUser } from './components/PopUser/PopUser';
 function App() {
     return (
         <>
-            <div class="wrapper">
-                
+            <div className="wrapper">
                 {/*pop-up start*/}
 
                 <PopUser />
