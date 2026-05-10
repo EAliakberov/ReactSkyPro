@@ -1,4 +1,4 @@
-export const Card = ({ theme, taskTitle, date, style }) => {
+export const Card = ({ theme, taskTitle, date }) => {
     const formattedDate = date.toLocaleDateString('ru-RU', {
         day: '2-digit',
         month: '2-digit',
@@ -9,8 +9,8 @@ export const Card = ({ theme, taskTitle, date, style }) => {
         <div className="cards__item">
             <div className="cards__card card">
                 <div className="card__group">
-                    <div className={'card__theme ' + style}>
-                        <p className={style}>{theme}</p>
+                    <div className={'card__theme ' + theme.style}>
+                        <p className={theme.style}>{theme.name}</p>
                     </div>
                     <a href="#popBrowse" target="_self">
                         <div className="card__btn">

@@ -1,103 +1,30 @@
-import { Card } from '../Card/Card';
+import { useEffect, useState } from 'react';
 import { Column } from '../Column/Column';
 
-const cardsArray = [
-    {
-        theme: 'web design',
-        text: 'Новая задача',
-        date: new Date('2023.10.30'),
-        style: '_orange',
-    },
-    {
-        theme: 'Research',
-        text: 'Новая задача',
-        date: new Date('2023.10.30'),
-        style: '_orange',
-    },
-    {
-        theme: 'Web design',
-        text: 'Новая задача',
-        date: new Date('2023.10.30'),
-        style: '_green',
-    },
-    {
-        theme: 'Copywriting',
-        text: 'Новая задача',
-        date: new Date('2023.10.30'),
-        style: '_purple',
-    },
-    {
-        theme: 'Web design',
-        text: 'Новая задача',
-        date: new Date('2023.10.30'),
-        style: '_orange',
-    },
-];
+export const Main = ({ cardsArray }) => {
+    const [isLoading, setIsLoading] = useState(true);
 
-export const Main = () => {
+    useEffect(() => {
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 3000);
+    }, []);
+
+    const groupedCards = Object.groupBy(cardsArray, (card) => card.status);
+
     return (
         <main className="main">
             <div className="container">
                 <div className="main__block">
-                    <div className="main__content">
-                        <Column cards={cardsArray} status={'Без статуса'} />
-                        <Column
-                            cards={[
-                                {
-                                    theme: 'Research',
-                                    text: 'Новая задача',
-                                    date: new Date('2023.10.30'),
-                                    style: '_orange',
-                                },
-                            ]}
-                            status={'Нужно сделать'}
-                        />
-                        <Column
-                            cards={[
-                                {
-                                    theme: 'Research',
-                                    text: 'Новая задача',
-                                    date: new Date('2023.10.30'),
-                                    style: '_orange',
-                                },
-                                {
-                                    theme: 'Copywriting',
-                                    text: 'Новая задача',
-                                    date: new Date('2023.10.30'),
-                                    style: '_purple',
-                                },
-                                {
-                                    theme: 'Web design',
-                                    text: 'Новая задача',
-                                    date: new Date('2023.10.30'),
-                                    style: '_orange',
-                                },
-                            ]}
-                            status={'В работе'}
-                        />
-                        <Column
-                            cards={[
-                                {
-                                    theme: 'Research',
-                                    text: 'Новая задача',
-                                    date: new Date('2023.10.30'),
-                                    style: '_orange',
-                                },
-                            ]}
-                            status={'Тестирование'}
-                        />
-                        <Column
-                            cards={[
-                                {
-                                    theme: 'Research',
-                                    text: 'Новая задача',
-                                    date: new Date('2023.10.30'),
-                                    style: '_orange',
-                                },
-                            ]}
-                            status={'Готово'}
-                        />
-                    </div>
+                    {!isLoading ? (
+                        <div className="main__content">
+                            {Object.entries(groupedCards).map(([group, cards]) => {
+                                return <Column cards={cards} status={group} key={group} />;
+                            })}
+                        </div>
+                    ) : (
+                        <div style={{ textAlign: 'center' }}>Подождите, идет загрузка...</div>
+                    )}
                 </div>
             </div>
         </main>

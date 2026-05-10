@@ -3,7 +3,8 @@ import { Header } from './components/Header/Header';
 import { PopNewCard } from './components/PopNewCard/PopNewCard';
 import { PopBrowse } from './components/PopBrowse/PopBrowse';
 import { Main } from './components/Main/Main';
-import { PopUser } from './components/PopUser/PopUser';
+import { PopExit } from './components/PopExit/PopExit';
+import { cardsArray } from '../data';
 
 function App() {
     return (
@@ -11,14 +12,14 @@ function App() {
             <div className="wrapper">
                 {/*pop-up start*/}
 
-                <PopUser />
+                <PopExit />
                 <PopNewCard />
                 <PopBrowse />
 
                 {/*pop-up end*/}
 
                 <Header />
-                <Main />
+                <Main cardsArray={cardsArray} />
             </div>
 
             <script src="js/script.js"></script>
