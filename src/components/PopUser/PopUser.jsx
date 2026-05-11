@@ -1,7 +1,9 @@
+import { SPopUserSet } from './PopUser.styled';
+
 const PopUser = ({ isVisible }) => {
     return (
-        <div
-            className="header__pop-user-set pop-user-set"
+        <SPopUserSet
+            className="pop-user-set"
             style={{ display: isVisible ? 'block' : 'none' }}
             id="user-set-target"
         >
@@ -15,7 +17,7 @@ const PopUser = ({ isVisible }) => {
             <button type="button" className="_hover03">
                 <a href="#popExit">Выйти</a>
             </button>
-        </div>
+        </SPopUserSet>
     );
 };
 
