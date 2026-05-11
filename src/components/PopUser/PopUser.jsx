@@ -1,11 +1,6 @@
-const PopUser = ({ isVisible }) => {
+const PopUser = () => {
     return (
-        <div
-            className="header__pop-user-set pop-user-set"
-            style={{ display: isVisible ? 'block' : 'none' }}
-            id="user-set-target"
-        >
-            {/* <!-- <a href="">x</a> --> */}
+        <div className="header__pop-user-set pop-user-set" id="user-set-target">
             <p className="pop-user-set__name">Ivan Ivanov</p>
             <p className="pop-user-set__mail">ivan.ivanov@gmail.com</p>
             <div className="pop-user-set__theme">

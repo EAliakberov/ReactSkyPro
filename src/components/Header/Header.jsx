@@ -23,13 +23,13 @@ export const Header = () => {
                             <a href="#popNewCard">Создать новую задачу</a>
                         </button>
                         <a
-                            href="#"
                             className="header__user _hover02"
                             onClick={() => setIsPopUserVisible(!isPopUserVisible)}
                         >
                             Ivan Ivanov
                         </a>
-                        <PopUser isVisible={isPopUserVisible} />
+
+                        {isPopUserVisible ? <PopUser /> : ''}
                     </nav>
                 </div>
             </div>
