@@ -1,0 +1,85 @@
+const themes = {
+    webDesigne: { name: 'web design', style: '_orange' },
+    research: { name: 'Research', style: '_green' },
+    copywriting: { name: 'Copywriting', style: '_purple' },
+};
+
+export const cardsArray = [
+    {
+        id: 0,
+        theme: themes.webDesigne,
+        text: 'Новая задача',
+        date: new Date('2023.10.30'),
+        status: 'Без статуса',
+    },
+    {
+        id: 1,
+        theme: themes.research,
+        text: 'Новая задача',
+        date: new Date('2023.10.30'),
+        status: 'Без статуса',
+    },
+    {
+        id: 2,
+        theme: themes.webDesigne,
+        text: 'Новая задача',
+        date: new Date('2023.10.30'),
+        status: 'Без статуса',
+    },
+    {
+        id: 3,
+        theme: themes.copywriting,
+        text: 'Новая задача',
+        date: new Date('2023.10.30'),
+        status: 'Без статуса',
+    },
+    {
+        id: 4,
+        theme: themes.webDesigne,
+        text: 'Новая задача',
+        date: new Date('2023.10.30'),
+        status: 'Без статуса',
+    },
+    {
+        id: 5,
+        theme: themes.research,
+        text: 'Новая задача',
+        date: new Date('2023.10.30'),
+        status: 'Нужно сделать',
+    },
+    {
+        id: 6,
+        theme: themes.research,
+        text: 'Новая задача',
+        date: new Date('2023.10.30'),
+        status: 'В работе',
+    },
+    {
+        id: 7,
+        theme: themes.copywriting,
+        text: 'Новая задача',
+        date: new Date('2023.10.30'),
+        status: 'В работе',
+    },
+    {
+        id: 8,
+        theme: themes.webDesigne,
+        text: 'Новая задача',
+        date: new Date('2023.10.30'),
+        status: 'В работе',
+    },
+    {
+        id: 9,
+        theme: themes.research,
+        text: 'Новая задача',
+        date: new Date('2023.10.30'),
+        status: 'Тестирование',
+    },
+    {
+        id: 10,
+        theme: themes.research,
+        text: 'Новая задача',
+        date: new Date('2023.10.30'),
+        status: 'Готово',
+    },
+];
