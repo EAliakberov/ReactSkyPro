@@ -1,16 +1,17 @@
+import { cardsArray } from '../../../data';
 import { Calendar } from '../Calendar/Calendar';
+import { Category } from '../Category/Category';
+import { SPopBrowse } from './PopBrowse.styled';
 
-export const PopBrowse = () => {
+export const PopBrowse = ({ setPopBrowse, popBrowseId }) => {
     return (
-        <div className="pop-browse" id="popBrowse">
+        <SPopBrowse className="pop-browse" id="popBrowse">
             <div className="pop-browse__container">
                 <div className="pop-browse__block">
                     <div className="pop-browse__content">
                         <div className="pop-browse__top-block">
                             <h3 className="pop-browse__ttl">Название задачи</h3>
-                            <div className="categories__theme theme-top _orange _active-category">
-                                <p className="_orange">Web Design</p>
-                            </div>
+                            <Category isActive={true} theme={cardsArray[popBrowseId].theme} />
                         </div>
                         <div className="pop-browse__status status">
                             <p className="status__p subttl">Статус</p>
@@ -51,10 +52,7 @@ export const PopBrowse = () => {
                                     ></textarea>
                                 </div>
                             </form>
-                            <div className="pop-new-card__calendar calendar">
-                                <p className="calendar__ttl subttl">Даты</p>
-                                <Calendar />
-                            </div>
+                            <Calendar className="pop-new-card__calendar calendar" />
                         </div>
                         <div className="theme-down__categories theme-down">
                             <p className="categories__p subttl">Категория</p>
@@ -71,8 +69,20 @@ export const PopBrowse = () => {
                                     <a href="#">Удалить задачу</a>
                                 </button>
                             </div>
-                            <button className="btn-browse__close _btn-bg _hover01">
-                                <a href="#">Закрыть</a>
+                            <button
+                                className="btn-browse__close _btn-bg _hover01"
+                                onClick={() => {
+                                    setPopBrowse(false);
+                                }}
+                            >
+                                <a
+                                    href=""
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                    }}
+                                >
+                                    Закрыть
+                                </a>
                             </button>
                         </div>
                         <div className="pop-browse__btn-edit _hide">
@@ -90,13 +100,25 @@ export const PopBrowse = () => {
                                     <a href="#">Удалить задачу</a>
                                 </button>
                             </div>
-                            <button className="btn-edit__close _btn-bg _hover01">
-                                <a href="#">Закрыть</a>
+                            <button
+                                className="btn-edit__close _btn-bg _hover01"
+                                onClick={() => {
+                                    setPopBrowse(false);
+                                }}
+                            >
+                                <a
+                                    href=""
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                    }}
+                                >
+                                    Закрыть
+                                </a>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </SPopBrowse>
     );
 };

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Column } from '../Column/Column';
+import { SMain } from './Main.styled';
 
-export const Main = ({ cardsArray }) => {
+export const Main = ({ cardsArray, setPopBrowse, setPopBrowseId}) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -13,13 +14,13 @@ export const Main = ({ cardsArray }) => {
     const groupedCards = Object.groupBy(cardsArray, (card) => card.status);
 
     return (
-        <main className="main">
+        <SMain className="main">
             <div className="container">
                 <div className="main__block">
                     {!isLoading ? (
                         <div className="main__content">
                             {Object.entries(groupedCards).map(([group, cards]) => {
-                                return <Column cards={cards} status={group} key={group} />;
+                                return <Column cards={cards} status={group} key={group} setPopBrowse={setPopBrowse} setPopBrowseId={setPopBrowseId} />;
                             })}
                         </div>
                     ) : (
@@ -27,6 +28,6 @@ export const Main = ({ cardsArray }) => {
                     )}
                 </div>
             </div>
-        </main>
+        </SMain>
     );
 };

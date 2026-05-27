@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PopUser from '../PopUser/PopUser';
 import { SBlock, SBtnMainNew, SHeader, SLogo, SNav, SUser } from './Header.styled';
 
-export const Header = () => {
+export const Header = ({ setPopExitState, setPopNewCard }) => {
     const [isPopUserVisible, setIsPopUserVisible] = useState(false);
 
     return (
@@ -20,17 +20,39 @@ export const Header = () => {
                         </a>
                     </SLogo>
                     <SNav>
-                        <SBtnMainNew className="header__btn-main-new _hover01" id="btnMainNew">
-                            <a href="#popNewCard">Создать новую задачу</a>
+                        <SBtnMainNew
+                            className="header__btn-main-new _hover01"
+                            id="btnMainNew"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setPopNewCard(true);
+                            }}
+                        >
+                            <a
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                }}
+                            >
+                                Создать новую задачу
+                            </a>
                         </SBtnMainNew>
                         <SUser
-                            href="#"
                             className="_hover02"
-                            onClick={() => setIsPopUserVisible(!isPopUserVisible)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsPopUserVisible(!isPopUserVisible);
+                            }}
                         >
                             Ivan Ivanov
                         </SUser>
-                        <PopUser isVisible={isPopUserVisible} />
+                        {isPopUserVisible ? (
+                            <PopUser
+                                setPopExitState={setPopExitState}
+                                setIsPopUserVisible={setIsPopUserVisible}
+                            />
+                        ) : (
+                            ''
+                        )}
                     </SNav>
                 </SBlock>
             </div>

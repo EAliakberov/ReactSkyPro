@@ -4,6 +4,10 @@ export const SHeader = styled.header`
     width: 100%;
     margin: 0 auto;
     background-color: #ffffff;
+
+    ._dark {
+        display: none;
+    }
 `;
 
 export const SBlock = styled.div`
@@ -46,6 +50,17 @@ export const SBtnMainNew = styled.button`
     & a {
         color: #ffffff;
     }
+    @media screen and (max-width: 495px) {
+        z-index: 3;
+        position: fixed;
+        left: 16px;
+        bottom: 30px;
+        top: auto;
+        width: calc(100vw - 32px);
+        height: 40px;
+        border-radius: 4px;
+        margin-right: 0;
+    }
 `;
 
 export const SUser = styled.a`
@@ -70,4 +85,3 @@ export const SUser = styled.a`
         padding: 0;
     }
 `;
-

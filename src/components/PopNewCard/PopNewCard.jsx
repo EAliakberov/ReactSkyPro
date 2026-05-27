@@ -1,13 +1,25 @@
+import { themes } from '../../../data';
 import { Calendar } from '../Calendar/Calendar';
+import { Categories } from '../Categories/Categories';
 
-export const PopNewCard = () => {
+import { SPopNewCard } from './PopNewCard.styled';
+
+export const PopNewCard = ({ setPopNewCard }) => {
     return (
-        <div className="pop-new-card" id="popNewCard">
+        <SPopNewCard className="pop-new-card" id="popNewCard">
             <div className="pop-new-card__container">
                 <div className="pop-new-card__block">
                     <div className="pop-new-card__content">
                         <h3 className="pop-new-card__ttl">Создание задачи</h3>
-                        <a href="#" className="pop-new-card__close">
+                        <a
+                            href="#"
+                            className="pop-new-card__close"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setPopNewCard(false);
+                            }}
+                        >
                             &#10006;
                         </a>
                         <div className="pop-new-card__wrap">
@@ -41,31 +53,22 @@ export const PopNewCard = () => {
                                     ></textarea>
                                 </div>
                             </form>
-                            <div className="pop-new-card__calendar calendar">
-                                <p className="calendar__ttl subttl">Даты</p>
-                                <Calendar />
-                            </div>
+                            <Calendar className="pop-new-card__calendar" />
                         </div>
-                        <div className="pop-new-card__categories categories">
-                            <p className="categories__p subttl">Категория</p>
-                            <div className="categories__themes">
-                                <div className="categories__theme _orange _active-category">
-                                    <p className="_orange">Web Design</p>
-                                </div>
-                                <div className="categories__theme _green">
-                                    <p className="_green">Research</p>
-                                </div>
-                                <div className="categories__theme _purple">
-                                    <p className="_purple">Copywriting</p>
-                                </div>
-                            </div>
-                        </div>
+                        <Categories
+                            className="pop-new-card__categories"
+                            categories={[themes.copywriting, themes.research, themes.webDesigne]}
+                            activeCategory={themes.copywriting}
+                        >
+                            
+                            
+                        </Categories>
                         <button className="form-new__create _hover01" id="btnCreate">
                             Создать задачу
                         </button>
                     </div>
                 </div>
             </div>
-        </div>
+        </SPopNewCard>
     );
 };

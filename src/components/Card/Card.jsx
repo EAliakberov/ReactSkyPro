@@ -1,4 +1,6 @@
-export const Card = ({ theme, taskTitle, date }) => {
+import { SCard } from './Card.styled';
+
+export const Card = ({ theme, taskTitle, date, setPopBrowseId, setPopBrowse, id }) => {
     const formattedDate = date.toLocaleDateString('ru-RU', {
         day: '2-digit',
         month: '2-digit',
@@ -6,13 +8,20 @@ export const Card = ({ theme, taskTitle, date }) => {
     });
 
     return (
-        <div className="cards__item">
+        <SCard className="cards__item">
             <div className="cards__card card">
                 <div className="card__group">
                     <div className={'card__theme ' + theme.style}>
                         <p className={theme.style}>{theme.name}</p>
                     </div>
-                    <a href="#popBrowse" target="_self">
+                    <a
+                        target="_self"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setPopBrowse(true);
+                            setPopBrowseId(id);
+                        }}
+                    >
                         <div className="card__btn">
                             <div></div>
                             <div></div>
@@ -57,6 +66,6 @@ export const Card = ({ theme, taskTitle, date }) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </SCard>
     );
 };
