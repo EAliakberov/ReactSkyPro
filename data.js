@@ -1,4 +1,4 @@
-const themes = {
+export const themes = {
     webDesigne: { name: 'web design', style: '_orange' },
     research: { name: 'Research', style: '_green' },
     copywriting: { name: 'Copywriting', style: '_purple' },

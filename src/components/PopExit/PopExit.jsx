@@ -1,8 +1,8 @@
+import { SPopExit } from './PopExit.styled';
 
-
-export const PopExit = () => {
+export const PopExit = ({ setPopExitState }) => {
     return (
-        <div className="pop-exit" id="popExit">
+        <SPopExit id="popExit">
             <div className="pop-exit__container">
                 <div className="pop-exit__block">
                     <div className="pop-exit__ttl">
@@ -13,13 +13,26 @@ export const PopExit = () => {
                             <button className="pop-exit__exit-yes _hover01" id="exitYes">
                                 <a href="modal/signin.html">Да, выйти</a>{' '}
                             </button>
-                            <button className="pop-exit__exit-no _hover03" id="exitNo">
-                                <a href="main.html">Нет, остаться</a>{' '}
+                            <button
+                                className="pop-exit__exit-no _hover03"
+                                id="exitNo"
+                                onClick={(e) => {
+                                    e.stopPropagation;                                    
+                                    setPopExitState(false);
+                                }}
+                            >
+                                <a
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                    }}
+                                >
+                                    Нет, остаться
+                                </a>{' '}
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
-        </div>
+        </SPopExit>
     );
 };
