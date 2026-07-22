@@ -1,13 +1,26 @@
+import { useNavigate } from 'react-router-dom';
 import { cardsArray } from '../../../data';
 import { Calendar } from '../Calendar/Calendar';
 import { Category } from '../Category/Category';
 import { SPopBrowse } from './PopBrowse.styled';
 
-export const PopBrowse = ({ setPopBrowse, popBrowseId }) => {
+export const PopBrowse = ({ popBrowseId }) => {
+    const navigate = useNavigate();
+    const closePopBrowse = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        navigate('/');
+    };
+
     return (
-        <SPopBrowse className="pop-browse" id="popBrowse">
+        <SPopBrowse className="pop-browse" id="popBrowse" onClick={closePopBrowse}>
             <div className="pop-browse__container">
-                <div className="pop-browse__block">
+                <div
+                    className="pop-browse__block"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                    }}
+                >
                     <div className="pop-browse__content">
                         <div className="pop-browse__top-block">
                             <h3 className="pop-browse__ttl">Название задачи</h3>
@@ -71,9 +84,7 @@ export const PopBrowse = ({ setPopBrowse, popBrowseId }) => {
                             </div>
                             <button
                                 className="btn-browse__close _btn-bg _hover01"
-                                onClick={() => {
-                                    setPopBrowse(false);
-                                }}
+                                onClick={closePopBrowse}
                             >
                                 <a
                                     href=""
@@ -102,9 +113,7 @@ export const PopBrowse = ({ setPopBrowse, popBrowseId }) => {
                             </div>
                             <button
                                 className="btn-edit__close _btn-bg _hover01"
-                                onClick={() => {
-                                    setPopBrowse(false);
-                                }}
+                                onClick={closePopBrowse}
                             >
                                 <a
                                     href=""

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Column } from '../Column/Column';
 import { SMain } from './Main.styled';
+import { cardsArray } from '../../../data';
 
-export const Main = ({ cardsArray, setPopBrowse, setPopBrowseId}) => {
+export const Main = ({ setPopBrowse, setPopBrowseId }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -20,7 +21,15 @@ export const Main = ({ cardsArray, setPopBrowse, setPopBrowseId}) => {
                     {!isLoading ? (
                         <div className="main__content">
                             {Object.entries(groupedCards).map(([group, cards]) => {
-                                return <Column cards={cards} status={group} key={group} setPopBrowse={setPopBrowse} setPopBrowseId={setPopBrowseId} />;
+                                return (
+                                    <Column
+                                        cards={cards}
+                                        status={group}
+                                        key={group}
+                                        setPopBrowse={setPopBrowse}
+                                        setPopBrowseId={setPopBrowseId}
+                                    />
+                                );
                             })}
                         </div>
                     ) : (
