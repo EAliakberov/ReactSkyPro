@@ -1,11 +1,20 @@
+import { useNavigate } from 'react-router-dom';
 import { SCard } from './Card.styled';
+import { cardsArray } from '../../../data';
 
-export const Card = ({ theme, taskTitle, date, setPopBrowseId, setPopBrowse, id }) => {
+export const Card = ({ theme, taskTitle, date, id }) => {
+    const navigate = useNavigate();
+
     const formattedDate = date.toLocaleDateString('ru-RU', {
         day: '2-digit',
         month: '2-digit',
         year: '2-digit',
     });
+
+    const browseCardClick = (e) => {
+        e.preventDefault();
+        navigate(`/browse/${id}`);
+    };
 
     return (
         <SCard className="cards__item">
@@ -14,14 +23,7 @@ export const Card = ({ theme, taskTitle, date, setPopBrowseId, setPopBrowse, id 
                     <div className={'card__theme ' + theme.style}>
                         <p className={theme.style}>{theme.name}</p>
                     </div>
-                    <a
-                        target="_self"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            setPopBrowse(true);
-                            setPopBrowseId(id);
-                        }}
-                    >
+                    <a target="_self" onClick={browseCardClick}>
                         <div className="card__btn">
                             <div></div>
                             <div></div>

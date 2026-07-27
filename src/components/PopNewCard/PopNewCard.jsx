@@ -1,10 +1,13 @@
+import { useNavigate } from 'react-router-dom';
 import { themes } from '../../../data';
 import { Calendar } from '../Calendar/Calendar';
 import { Categories } from '../Categories/Categories';
 
 import { SPopNewCard } from './PopNewCard.styled';
 
-export const PopNewCard = ({ setPopNewCard }) => {
+export const PopNewCard = () => {
+    const navigate = useNavigate();
+    
     return (
         <SPopNewCard className="pop-new-card" id="popNewCard">
             <div className="pop-new-card__container">
@@ -17,7 +20,7 @@ export const PopNewCard = ({ setPopNewCard }) => {
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                setPopNewCard(false);
+                                navigate('/');
                             }}
                         >
                             &#10006;
@@ -59,10 +62,7 @@ export const PopNewCard = ({ setPopNewCard }) => {
                             className="pop-new-card__categories"
                             categories={[themes.copywriting, themes.research, themes.webDesigne]}
                             activeCategory={themes.copywriting}
-                        >
-                            
-                            
-                        </Categories>
+                        ></Categories>
                         <button className="form-new__create _hover01" id="btnCreate">
                             Создать задачу
                         </button>

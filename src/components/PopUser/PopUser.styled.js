@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const SPopUserSet = styled.div`
     position: absolute;
     top: 61px;
-    right: 0;
+    right: max(0px, calc(50% - 630px));
     width: 213px;
     height: 205px;
     border-radius: 10px;

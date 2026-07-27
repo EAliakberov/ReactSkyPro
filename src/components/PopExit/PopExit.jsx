@@ -1,6 +1,20 @@
+import { useNavigate } from 'react-router-dom';
 import { SPopExit } from './PopExit.styled';
 
-export const PopExit = ({ setPopExitState }) => {
+export const PopExit = ({ setIsAuth }) => {
+    const navigate = useNavigate();
+    const singOut = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        setIsAuth(false);
+        navigate('/');
+    };
+    const cancelSingOut = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        navigate('/');
+    };
+
     return (
         <SPopExit id="popExit">
             <div className="pop-exit__container">
@@ -10,16 +24,17 @@ export const PopExit = ({ setPopExitState }) => {
                     </div>
                     <form className="pop-exit__form" id="formExit" action="#">
                         <div className="pop-exit__form-group">
-                            <button className="pop-exit__exit-yes _hover01" id="exitYes">
-                                <a href="modal/signin.html">Да, выйти</a>{' '}
+                            <button
+                                className="pop-exit__exit-yes _hover01"
+                                id="exitYes"
+                                onClick={singOut}
+                            >
+                                Выйти
                             </button>
                             <button
                                 className="pop-exit__exit-no _hover03"
                                 id="exitNo"
-                                onClick={(e) => {
-                                    e.stopPropagation;                                    
-                                    setPopExitState(false);
-                                }}
+                                onClick={cancelSingOut}
                             >
                                 <a
                                     onClick={(e) => {

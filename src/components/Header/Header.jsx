@@ -1,9 +1,32 @@
 import { useState } from 'react';
-import PopUser from '../PopUser/PopUser';
 import { SBlock, SBtnMainNew, SHeader, SLogo, SNav, SUser } from './Header.styled';
+import { useNavigate } from 'react-router-dom';
 
-export const Header = ({ setPopExitState, setPopNewCard }) => {
+export const Header = ({ isAuth }) => {
     const [isPopUserVisible, setIsPopUserVisible] = useState(false);
+    const [isPopNewCard, setIsPopNewCard] = useState(false);
+
+    const navigate = useNavigate();
+    const userBtnClick = (e) => {
+        e.stopPropagation();
+        if (isPopUserVisible) {
+            setIsPopUserVisible(false);
+            navigate('/');
+        } else {
+            setIsPopUserVisible(true);
+            navigate('/user');
+        }
+    };
+    const nerCardBtnClick = (e) => {
+        e.stopPropagation();
+        if (isPopNewCard) {
+            setIsPopNewCard(false);
+            navigate('/');
+        } else {
+            setIsPopNewCard(true);
+            navigate('/new_card');
+        }
+    };
 
     return (
         <SHeader>
@@ -11,7 +34,7 @@ export const Header = ({ setPopExitState, setPopNewCard }) => {
                 <SBlock className="header__block">
                     <SLogo className="header__logo _show _light">
                         <a href="" target="_self">
-                            <img src="images/logo.png" alt="logo" />
+                            <img src="./images/logo.png" alt="logo" />
                         </a>
                     </SLogo>
                     <SLogo className="header__logo _dark">
@@ -23,10 +46,7 @@ export const Header = ({ setPopExitState, setPopNewCard }) => {
                         <SBtnMainNew
                             className="header__btn-main-new _hover01"
                             id="btnMainNew"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setPopNewCard(true);
-                            }}
+                            onClick={nerCardBtnClick}
                         >
                             <a
                                 onClick={(e) => {
@@ -36,23 +56,9 @@ export const Header = ({ setPopExitState, setPopNewCard }) => {
                                 Создать новую задачу
                             </a>
                         </SBtnMainNew>
-                        <SUser
-                            className="_hover02"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setIsPopUserVisible(!isPopUserVisible);
-                            }}
-                        >
-                            Ivan Ivanov
+                        <SUser className="_hover02" onClick={userBtnClick}>
+                            {isAuth ? 'Ivan Ivanov' : 'Войти'}
                         </SUser>
-                        {isPopUserVisible ? (
-                            <PopUser
-                                setPopExitState={setPopExitState}
-                                setIsPopUserVisible={setIsPopUserVisible}
-                            />
-                        ) : (
-                            ''
-                        )}
                     </SNav>
                 </SBlock>
             </div>
