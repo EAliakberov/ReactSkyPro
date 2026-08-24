@@ -1,5 +1,5 @@
 import { PopExit } from '../components/PopExit/PopExit';
 
-export const PopExitPage = ({setIsAuth}) => {
-    return <PopExit setIsAuth={setIsAuth} />;
+export const PopExitPage = ({ setUserData }) => {
+    return <PopExit setUserData ={setUserData} />;
 };

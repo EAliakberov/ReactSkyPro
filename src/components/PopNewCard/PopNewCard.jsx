@@ -4,10 +4,40 @@ import { Calendar } from '../Calendar/Calendar';
 import { Categories } from '../Categories/Categories';
 
 import { SPopNewCard } from './PopNewCard.styled';
+import { useState } from 'react';
+import { addTask } from '../../services/api';
 
-export const PopNewCard = () => {
+export const PopNewCard = ({ userData, setTasks }) => {
     const navigate = useNavigate();
-    
+    const [newCard, setNewCard] = useState({
+        title: 'Новая задача',
+        topic: 'Research',
+        status: 'Без статуса',
+        description: '',
+        date: '2024-01-07T16:26:18.179Z',
+    });
+
+    const handleCreateTaskButtonClick = async () => {
+        const newTasks = await addTask(newCard, userData.token);
+        console.log(newTasks);
+        setTasks(newTasks);
+        navigate('/');
+    };
+
+    const handleInputChange = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setNewCard({ ...newCard, [e.target.name]: e.target.value });
+    };
+
+    const handleDataChange = ({ newDate }) => {
+        setNewCard({ ...newCard, date: newDate });
+    };
+
+    const handleCategoryChange = (newTopic) => {
+        setNewCard({ ...newCard, topic: newTopic });
+    };
+
     return (
         <SPopNewCard className="pop-new-card" id="popNewCard">
             <div className="pop-new-card__container">
@@ -38,9 +68,11 @@ export const PopNewCard = () => {
                                     <input
                                         className="form-new__input"
                                         type="text"
-                                        name="name"
+                                        name="title"
                                         id="formTitle"
                                         placeholder="Введите название задачи..."
+                                        value={newCard.title}
+                                        onChange={handleInputChange}
                                         autoFocus
                                     />
                                 </div>
@@ -50,20 +82,31 @@ export const PopNewCard = () => {
                                     </label>
                                     <textarea
                                         className="form-new__area"
-                                        name="text"
+                                        name="description"
                                         id="textArea"
                                         placeholder="Введите описание задачи..."
+                                        onChange={handleInputChange}
+                                        value={newCard.description}
                                     ></textarea>
                                 </div>
                             </form>
-                            <Calendar className="pop-new-card__calendar" />
+                            <Calendar
+                                className="pop-new-card__calendar"
+                                dataDate={newCard.date}
+                                onChange={handleDataChange}
+                            />
                         </div>
                         <Categories
-                            className="pop-new-card__categories"
-                            categories={[themes.copywriting, themes.research, themes.webDesigne]}
-                            activeCategory={themes.copywriting}
+                            className="pop-newcard__categories"
+                            categories={Object.keys(themes)}
+                            selectedCategory={1}
+                            onChange={handleCategoryChange}
                         ></Categories>
-                        <button className="form-new__create _hover01" id="btnCreate">
+                        <button
+                            className="form-new__create _hover01"
+                            id="btnCreate"
+                            onClick={handleCreateTaskButtonClick}
+                        >
                             Создать задачу
                         </button>
                     </div>

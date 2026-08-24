@@ -1,16 +1,57 @@
-import { useNavigate } from 'react-router-dom';
-import { cardsArray } from '../../../data';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+
 import { Calendar } from '../Calendar/Calendar';
 import { Category } from '../Category/Category';
 import { SPopBrowse } from './PopBrowse.styled';
+import { getTheme } from '../../../data';
+import { deleteTask, editTask } from '../../services/api';
 
-export const PopBrowse = ({ popBrowseId }) => {
+export const PopBrowse = ({ userData, setTasks }) => {
     const navigate = useNavigate();
     const closePopBrowse = (e) => {
         e.stopPropagation();
         e.preventDefault();
         navigate('/');
     };
+
+    const { id } = useParams();
+
+    const { tasksById } = useOutletContext();
+    const currentTask = tasksById[id];
+    currentTask || navigate('/');
+    // ` "_id": "659ad0aad0e154bebca2b6b3",
+    //   "userId": "659abd3ad0e154bebca2b6b7",
+    //   "title": "Новая задача 1!",
+    //   "topic": "Research",
+    //   "date": "2024-01-07T16:26:18.179Z",
+    //   "description": "Подробное описание задачи",
+    //   "status": "Без статуса"`;
+
+    console.log(currentTask, id);
+
+    const theme = getTheme(currentTask.topic);
+
+    const handleEditTaskButtonClick = async () => {
+        const newTasks = await editTask(
+            {
+                title: currentTask.title,
+                topic: currentTask.topic,
+                date: currentTask.date,
+                description: currentTask.description,
+                status: currentTask.status,
+            },
+            currentTask._id,
+            userData.token
+        );
+        console.log(newTasks);
+        setTasks(newTasks);
+        navigate('/');
+    };
+
+    async function handleDeleteButton() {
+        const newTasks = await deleteTask(currentTask._id, userData.token);
+        setTasks(newTasks);
+    }
 
     return (
         <SPopBrowse className="pop-browse" id="popBrowse" onClick={closePopBrowse}>
@@ -23,26 +64,14 @@ export const PopBrowse = ({ popBrowseId }) => {
                 >
                     <div className="pop-browse__content">
                         <div className="pop-browse__top-block">
-                            <h3 className="pop-browse__ttl">Название задачи</h3>
-                            <Category isActive={true} theme={cardsArray[popBrowseId].theme} />
+                            <h3 className="pop-browse__ttl">{currentTask.title}</h3>
+                            <Category isActive={true} theme={theme} />
                         </div>
                         <div className="pop-browse__status status">
                             <p className="status__p subttl">Статус</p>
                             <div className="status__themes">
-                                <div className="status__theme _hide">
-                                    <p>Без статуса</p>
-                                </div>
                                 <div className="status__theme _gray">
-                                    <p className="_gray">Нужно сделать</p>
-                                </div>
-                                <div className="status__theme _hide">
-                                    <p>В работе</p>
-                                </div>
-                                <div className="status__theme _hide">
-                                    <p>Тестирование</p>
-                                </div>
-                                <div className="status__theme _hide">
-                                    <p>Готово</p>
+                                    <p className="_gray">{currentTask.status}</p>
                                 </div>
                             </div>
                         </div>
@@ -62,6 +91,7 @@ export const PopBrowse = ({ popBrowseId }) => {
                                         id="textArea01"
                                         readOnly
                                         placeholder="Введите описание задачи..."
+                                        value={currentTask.description || ''}
                                     ></textarea>
                                 </div>
                             </form>
@@ -70,16 +100,34 @@ export const PopBrowse = ({ popBrowseId }) => {
                         <div className="theme-down__categories theme-down">
                             <p className="categories__p subttl">Категория</p>
                             <div className="categories__theme _orange _active-category">
-                                <p className="_orange">Web Design</p>
+                                <p className="_orange">{currentTask.topic}</p>
                             </div>
                         </div>
                         <div className="pop-browse__btn-browse ">
                             <div className="btn-group">
                                 <button className="btn-browse__edit _btn-bor _hover03">
-                                    <a href="#">Редактировать задачу</a>
+                                    <a
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            handleEditTaskButtonClick();
+                                        }}
+                                    >
+                                        Редактировать задачу
+                                    </a>
                                 </button>
                                 <button className="btn-browse__delete _btn-bor _hover03">
-                                    <a href="#">Удалить задачу</a>
+                                    <a
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            handleDeleteButton();
+                                        }}
+                                    >
+                                        Удалить задачу
+                                    </a>
                                 </button>
                             </div>
                             <button

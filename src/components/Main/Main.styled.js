@@ -1,16 +1,21 @@
 import styled from 'styled-components';
 
 export const SMain = styled.main`
-    width: 100%;
+    min-width: fit-content;
     background-color: #eaeef6;
 
+    .container {
+        max-width: none;
+        min-width: fit-content;
+    }
+
     .main__block {
-        width: 100%;
+        width: fit-content;
         margin: 0 auto;
         padding: 25px 0 49px;
     }
     .main__content {
-        width: 100%;
+        min-width: fit-content;
         display: flex;
     }
     .main__column {

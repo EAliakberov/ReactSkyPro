@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { SBlock, SBtnMainNew, SHeader, SLogo, SNav, SUser } from './Header.styled';
 import { useNavigate } from 'react-router-dom';
 
-export const Header = ({ isAuth }) => {
+export const Header = ({ userData }) => {
     const [isPopUserVisible, setIsPopUserVisible] = useState(false);
     const [isPopNewCard, setIsPopNewCard] = useState(false);
 
     const navigate = useNavigate();
+
     const userBtnClick = (e) => {
         e.stopPropagation();
+        
         if (isPopUserVisible) {
             setIsPopUserVisible(false);
             navigate('/');
@@ -17,7 +19,7 @@ export const Header = ({ isAuth }) => {
             navigate('/user');
         }
     };
-    const nerCardBtnClick = (e) => {
+    const newCardBtnClick = (e) => {
         e.stopPropagation();
         if (isPopNewCard) {
             setIsPopNewCard(false);
@@ -46,7 +48,7 @@ export const Header = ({ isAuth }) => {
                         <SBtnMainNew
                             className="header__btn-main-new _hover01"
                             id="btnMainNew"
-                            onClick={nerCardBtnClick}
+                            onClick={newCardBtnClick}
                         >
                             <a
                                 onClick={(e) => {
@@ -57,7 +59,7 @@ export const Header = ({ isAuth }) => {
                             </a>
                         </SBtnMainNew>
                         <SUser className="_hover02" onClick={userBtnClick}>
-                            {isAuth ? 'Ivan Ivanov' : 'Войти'}
+                            {userData ? userData.name : 'Войти'}
                         </SUser>
                     </SNav>
                 </SBlock>
