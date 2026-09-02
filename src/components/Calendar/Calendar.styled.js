@@ -51,7 +51,7 @@ export const SCalendar = styled.div`
     }
     & .calendar__cells {
         width: 182px;
-        height: 126px;
+        height: auto;
         display: flex;
         flex-wrap: wrap;
     }
@@ -84,8 +84,6 @@ export const SCalendar = styled.div`
     & .calendar__period {
         padding: 0 7px;
     }
-
-    
 
     & .nav__actions {
         display: flex;
@@ -121,6 +119,12 @@ export const SCalendar = styled.div`
     & ._current {
         font-weight: 700;
     }
+
+    & ._selected {
+        background-color: #94a6be;
+        color: #ffffff;
+    }
+
     @media screen and (max-width: 660px) {
         max-width: 340px;
         width: 100%;

@@ -12,7 +12,7 @@ export async function getTasks(token) {
         });
         return data.data?.tasks || [];
     } catch (err) {
-        const message = err.response?.data.message || err.message;
+        const message = err.response?.data.error || err.message;
         throw new Error(message, { cause: err });
     }
 }
@@ -26,7 +26,7 @@ export async function getTask(taskId, token) {
         });
         return data.data?.task || {};
     } catch (err) {
-        throw new Error(err.response?.data.message || err.message, { cause: err });
+        throw new Error(err.response?.data.error || err.message, { cause: err });
     }
 }
 
@@ -51,7 +51,7 @@ export async function addTask(newTask, token) {
         });
         return data.data?.tasks || [];
     } catch (err) {
-        throw new Error(err.response?.data.message || err.message, { cause: err });
+        throw new Error(err.response?.data.error || err.message, { cause: err });
     }
 }
 

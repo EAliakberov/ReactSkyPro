@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { SModal, SWrapper } from './SignInUp.styled';
 import { GlobalStyle } from '../../App.styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { userLogin, userRegister } from '../../services/api';
 
 export const SingInUp = ({ isSignIn, setUserData }) => {
@@ -11,6 +11,7 @@ export const SingInUp = ({ isSignIn, setUserData }) => {
         password: '',
         name: '',
     });
+    const [error, setError] = useState(null);
 
     const [formErrors, setFormErrors] = useState({
         login: false,
@@ -18,6 +19,7 @@ export const SingInUp = ({ isSignIn, setUserData }) => {
         name: false,
     });
 
+   
     function isFieldsOk() {
         const errors = {
             login: formData.login?.length < 3,
@@ -53,7 +55,7 @@ export const SingInUp = ({ isSignIn, setUserData }) => {
                     password: true,
                     name: true,
                 });
-                console.error(err.message);
+                setError(err);
             });
     };
 
@@ -72,7 +74,7 @@ export const SingInUp = ({ isSignIn, setUserData }) => {
         let isOk = await isFieldsOk();
 
         if (!isOk) {
-            console.error('Поля заполнены неправильно');
+            setError(new Error('Поля заполнены неправильно'));
             return;
         }
 
@@ -81,7 +83,7 @@ export const SingInUp = ({ isSignIn, setUserData }) => {
             setUserData(userData);
             navigate('/');
         } catch (err) {
-            console.error(err.message);
+            setError(err);
         }
     };
 
@@ -99,6 +101,7 @@ export const SingInUp = ({ isSignIn, setUserData }) => {
                     <div className="modal__block">
                         <div className="modal__ttl">
                             <h2>{isSignIn ? 'Вход' : 'Регистрация'}</h2>
+                            {error ? <p style={{ color: 'red' }}>{error.message}</p> : ''}
                         </div>
                         {isSignIn ? (
                             <form
