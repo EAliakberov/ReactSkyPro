@@ -18,7 +18,7 @@ import {
 
 export const Calendar = ({ currentDate, onChange, isEditing }) => {
     const initialDate = isNaN(currentDate?.getTime()) ? new Date() : new Date(currentDate);
-    
+
     const [selectedDate, setSelectedDate] = useState(initialDate);
     const [currentMonth, setCurrentMonth] = useState(initialDate);
 
@@ -39,7 +39,7 @@ export const Calendar = ({ currentDate, onChange, isEditing }) => {
     }, [currentMonth]);
 
     useEffect(() => {
-        if (isEditing) setSelectedDate();
+        if (!isEditing) setSelectedDate(null);
     }, [isEditing]);
 
     const handlePrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
@@ -124,7 +124,11 @@ export const Calendar = ({ currentDate, onChange, isEditing }) => {
                 <input type="hidden" id="datepick_value" value="08.09.2023" />
                 <div className="calendar__period">
                     <p className="calendar__p date-end">
-                        Выберите срок исполнения <span className="date-control"></span>.
+                        {selectedDate ? 'Срок исполнения' : 'Выберите срок исполнения'}{' '}
+                        <span className="date-control">
+                            {selectedDate ? format(selectedDate, 'dd.MM.yy') : ''}
+                        </span>
+                        .
                     </p>
                 </div>
             </div>
