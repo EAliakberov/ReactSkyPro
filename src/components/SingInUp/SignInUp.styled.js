@@ -75,6 +75,9 @@ export const SModal = styled.div`
                 letter-spacing: -0.28px;
                 color: #94a6be;
             }
+            &.error {
+                border: solid 1px red;
+            }
         }
 
         &__btn-signup-ent,

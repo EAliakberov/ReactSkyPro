@@ -1,11 +1,15 @@
 import styled from 'styled-components';
 
 export const SColuumn = styled.div`
+    width: 20%;
+    margin: 0 auto;
+    display: block;
+    
     .column__title {
         padding: 0 10px;
         margin: 15px 0;
     }
-    .column__title p {
+    & .column__title p {
         color: #94a6be;
         font-size: 14px;
         font-weight: 600;
@@ -13,7 +17,7 @@ export const SColuumn = styled.div`
         text-transform: uppercase;
     }
 
-    .cards {
+    & .cards {
         width: 100%;
         display: block;
         position: relative;

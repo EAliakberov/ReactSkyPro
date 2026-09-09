@@ -8,6 +8,7 @@ export const SCategory = styled.div`
     border-radius: 24px;
     margin-right: 7px;
     opacity: 0.4;
+    cursor: pointer;
 
     p {
         font-size: 14px;

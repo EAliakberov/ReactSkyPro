@@ -12,29 +12,60 @@ import { SingInUp } from './SingInUp/SingInUp.jsx';
 
 export const AppRoutes = () => {
     //const [popBrowseId, setPopBrowseId] = useState(0);
+    
+    const [tasks, setTasks] = useState([]);
 
-    const [isLoading, setIsLoading] = useState(true);
-    const [isAuth, setIsAuth] = useState(false);
+    const [userData, setUserData] = useState(() => {
+        try {            
+            const localUserData = localStorage.getItem('userData');
+            return localUserData ? JSON.parse(localUserData) : null;
+        } catch {
+            return null;
+        }
+    });
 
     useEffect(() => {
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 1000);
-    }, []);
+        if (userData === null) {
+            localStorage.removeItem('userData');
+        } else {
+            localStorage.setItem('userData', JSON.stringify(userData));
+        }
+    }, [userData]);
 
     return (
         <Routes>
-            <Route element={<PrivatePage isAuth={isAuth} />}>
-                <Route path="/" element={<MainPage isLoading={isLoading} isAuth={isAuth} />}>
-                    <Route path="/browse/:id" element={<PopBrowsePage />} />
-                    <Route path="/exit" element={<PopExitPage setIsAuth={setIsAuth} />} />
-                    <Route path="/new_card" element={<PopNewCardPage />} />
+            <Route element={<PrivatePage isAuth={!!userData} />}>
+                <Route
+                    path="/"
+                    element={
+                        <MainPage
+                            userData={userData}
+                            tasks={tasks}
+                            setTasks={setTasks}
+                        />
+                    }
+                >
+                    <Route
+                        path="/browse/:id"
+                        element={<PopBrowsePage userData={userData} setTasks={setTasks} />}
+                    />
+                    <Route path="/exit" element={<PopExitPage setUserData={setUserData} />} />
+                    <Route
+                        path="/new_card"
+                        element={<PopNewCardPage userData={userData} setTasks={setTasks} />}
+                    />
                     <Route path="/user" element={<PopUserPage />} />
                 </Route>
             </Route>
 
-            <Route path="/signin" element={<SingInUp isSignIn={true} setIsAuth={setIsAuth} />} />
-            <Route path="/signup" element={<SingInUp isSignIn={false} setIsAuth={setIsAuth} />} />
+            <Route
+                path="/signin"
+                element={<SingInUp isSignIn={true} setUserData={setUserData} />}
+            />
+            <Route
+                path="/signup"
+                element={<SingInUp isSignIn={false} setUserData={setUserData} />}
+            />
             <Route path="/*" element={<ErrorPage />} />
         </Routes>
     );

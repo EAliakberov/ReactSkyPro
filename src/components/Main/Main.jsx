@@ -1,39 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { Column } from '../Column/Column';
 import { SMain } from './Main.styled';
-import { cardsArray } from '../../../data';
 
-export const Main = ({ setPopBrowse, setPopBrowseId }) => {
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 3000);
-    }, []);
-
-    const groupedCards = Object.groupBy(cardsArray, (card) => card.status);
+export const Main = ({ tasks, isLoading, error }) => {
+    const groupedTasks = useMemo(() => {
+        return Object.groupBy(tasks, (card) => card.status?.toLowerCase() || 'без статуса');
+    }, [tasks]);
 
     return (
         <SMain className="main">
             <div className="container">
                 <div className="main__block">
-                    {!isLoading ? (
+                    {!isLoading && !error ? (
                         <div className="main__content">
-                            {Object.entries(groupedCards).map(([group, cards]) => {
-                                return (
-                                    <Column
-                                        cards={cards}
-                                        status={group}
-                                        key={group}
-                                        setPopBrowse={setPopBrowse}
-                                        setPopBrowseId={setPopBrowseId}
-                                    />
-                                );
+                            {Object.entries(groupedTasks).map(([group, cards]) => {
+                                return <Column cards={cards} status={group} key={group} />;
                             })}
                         </div>
                     ) : (
-                        <div style={{ textAlign: 'center' }}>Подождите, идет загрузка...</div>
+                        !error && (
+                            <div style={{ textAlign: 'center' }}>Подождите, идет загрузка...</div>
+                        )
                     )}
                 </div>
             </div>
