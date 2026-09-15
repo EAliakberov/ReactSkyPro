@@ -201,9 +201,9 @@ export const PopBrowse = ({ userData, setTasks }) => {
                             </div>
                             <button
                                 className="btn-browse__close _btn-bg _hover01"
-                                onClick={closePopBrowse}
                                 onClick={(e) => {
                                     e.preventDefault();
+                                    closePopBrowse();
                                 }}
                             >
                                 Закрыть

@@ -4,10 +4,11 @@ export const SColuumn = styled.div`
     width: 20%;
     margin: 0 auto;
     display: block;
-    
+
     .column__title {
         padding: 0 10px;
         margin: 15px 0;
+        width: 230px;
     }
     & .column__title p {
         color: #94a6be;
@@ -26,6 +27,7 @@ export const SColuumn = styled.div`
     @media screen and (max-width: 1200px) {
         .cards {
             width: 100%;
+            height: 169px;
             display: flex;
             overflow-y: auto;
         }

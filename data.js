@@ -4,6 +4,8 @@ export const themes = {
     copywriting: { name: 'Copywriting', style: '_purple' },
 };
 
+export const statusList = ['Без статуса', 'Нужно сделать', 'В работе', 'Тестирование', 'Готово'];
+
 export const getTheme = (topic) => {
     const theme = themes[topic.toLowerCase()];
     console.log(topic);

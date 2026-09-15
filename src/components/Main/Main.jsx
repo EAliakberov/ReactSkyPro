@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Column } from '../Column/Column';
 import { SMain } from './Main.styled';
+import { statusList } from '../../../data';
 
 export const Main = ({ tasks, isLoading, error }) => {
     const groupedTasks = useMemo(() => {
@@ -13,8 +14,14 @@ export const Main = ({ tasks, isLoading, error }) => {
                 <div className="main__block">
                     {!isLoading && !error ? (
                         <div className="main__content">
-                            {Object.entries(groupedTasks).map(([group, cards]) => {
-                                return <Column cards={cards} status={group} key={group} />;
+                            {statusList.map((status) => {
+                                return (
+                                    <Column
+                                        cards={groupedTasks[status.toLowerCase()] || []}
+                                        status={status}
+                                        key={status}
+                                    />
+                                );
                             })}
                         </div>
                     ) : (
