@@ -1,14 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { SPopExit } from './PopExit.styled';
 
-export const PopExit = ({ setIsAuth }) => {
+export const PopExit = ({ setUserData }) => {
     const navigate = useNavigate();
     const singOut = (e) => {
         e.stopPropagation();
         e.preventDefault();
-        setIsAuth(false);
+        setUserData(null);
         navigate('/');
     };
+
     const cancelSingOut = (e) => {
         e.stopPropagation();
         e.preventDefault();

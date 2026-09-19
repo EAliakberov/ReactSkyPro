@@ -1,7 +1,7 @@
 import { Card } from '../Card/Card';
 import { SColuumn } from './Column.styled';
 
-export const Column = ({ status, cards, setPopBrowse,setPopBrowseId }) => {
+export const Column = ({ status, cards }) => {
     return (
         <SColuumn className="main__column">
             <div className="column__title">
@@ -9,15 +9,7 @@ export const Column = ({ status, cards, setPopBrowse,setPopBrowseId }) => {
             </div>
             <div className="cards">
                 {cards.map((card) => (
-                    <Card
-                        theme={card.theme}
-                        taskTitle={card.text}
-                        date={card.date}
-                        key={card.id}
-                        id={card.id}
-                        setPopBrowse={setPopBrowse}
-                        setPopBrowseId={setPopBrowseId}
-                    />
+                    <Card key={card._id} {...card} />
                 ))}
             </div>
         </SColuumn>

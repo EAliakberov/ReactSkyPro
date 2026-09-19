@@ -4,16 +4,57 @@ import { Calendar } from '../Calendar/Calendar';
 import { Categories } from '../Categories/Categories';
 
 import { SPopNewCard } from './PopNewCard.styled';
+import { useState } from 'react';
+import { addTask } from '../../services/api';
 
-export const PopNewCard = () => {
+export const PopNewCard = ({ userData, setTasks }) => {
     const navigate = useNavigate();
-    
+    const [error, setError] = useState(null);
+    const [newCard, setNewCard] = useState({
+        title: 'Новая задача',
+        topic: 'Research',
+        status: 'Без статуса',
+        description: '',
+        date: '2024-01-07T16:26:18.179Z',
+    });
+
+    const handleCreateTaskButtonClick = async () => {
+        try {
+            const newTasks = await addTask(newCard, userData.token);
+            await setTasks(newTasks);
+            navigate('/');
+        } catch {
+            setError(new Error('Заполните все поля верно!'));
+        }
+    };
+
+    const handleInputChange = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setError(null);
+        setNewCard({ ...newCard, [e.target.name]: e.target.value });
+    };
+    /**
+     *
+     * @param {Date} newDate
+     */
+    const handleDateChange = (newDate) => {
+        setNewCard({ ...newCard, date: newDate.toISOString() });
+        setError(null);
+    };
+
+    const handleCategoryChange = (newTopic) => {
+        setNewCard({ ...newCard, topic: newTopic });
+    };
+
     return (
         <SPopNewCard className="pop-new-card" id="popNewCard">
             <div className="pop-new-card__container">
                 <div className="pop-new-card__block">
                     <div className="pop-new-card__content">
                         <h3 className="pop-new-card__ttl">Создание задачи</h3>
+
+                        {error && <p style={{ color: 'red' }}>{error?.message}</p>}
                         <a
                             href="#"
                             className="pop-new-card__close"
@@ -38,10 +79,13 @@ export const PopNewCard = () => {
                                     <input
                                         className="form-new__input"
                                         type="text"
-                                        name="name"
+                                        name="title"
                                         id="formTitle"
                                         placeholder="Введите название задачи..."
+                                        value={newCard.title}
+                                        onChange={handleInputChange}
                                         autoFocus
+                                        style={error ? { outline: 'solid 1px red' } : undefined}
                                     />
                                 </div>
                                 <div className="form-new__block">
@@ -50,20 +94,37 @@ export const PopNewCard = () => {
                                     </label>
                                     <textarea
                                         className="form-new__area"
-                                        name="text"
+                                        name="description"
                                         id="textArea"
                                         placeholder="Введите описание задачи..."
+                                        onChange={handleInputChange}
+                                        value={newCard.description}
+                                        style={error ? { outline: 'solid 1px red' } : undefined}
                                     ></textarea>
                                 </div>
                             </form>
-                            <Calendar className="pop-new-card__calendar" />
+                            <div style={error ? { outline: 'solid 1px red' } : undefined}>
+                                <Calendar
+                                    className="pop-new-card__calendar"
+                                    currentDate={new Date()}
+                                    onChange={handleDateChange}
+                                    isEditing={true}
+                                />
+                            </div>
                         </div>
-                        <Categories
-                            className="pop-new-card__categories"
-                            categories={[themes.copywriting, themes.research, themes.webDesigne]}
-                            activeCategory={themes.copywriting}
-                        ></Categories>
-                        <button className="form-new__create _hover01" id="btnCreate">
+                        <div style={error ? { outline: 'solid 1px red' } : undefined}>
+                            <Categories
+                                className="pop-newcard__categories"
+                                categories={Object.keys(themes)}
+                                selectedCategory={1}
+                                onChange={handleCategoryChange}
+                            ></Categories>
+                        </div>
+                        <button
+                            className="form-new__create _hover01"
+                            id="btnCreate"
+                            onClick={handleCreateTaskButtonClick}
+                        >
                             Создать задачу
                         </button>
                     </div>

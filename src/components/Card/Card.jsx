@@ -1,20 +1,20 @@
 import { useNavigate } from 'react-router-dom';
 import { SCard } from './Card.styled';
-import { cardsArray } from '../../../data';
+import { getTheme } from '../../../data';
 
-export const Card = ({ theme, taskTitle, date, id }) => {
+export const Card = (card) => {
     const navigate = useNavigate();
 
-    const formattedDate = date.toLocaleDateString('ru-RU', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit',
-    });
+    const { _id, userId, title, topic, date, description, status } = card;
+
+    const formattedDate = new Date(date).toLocaleDateString();
 
     const browseCardClick = (e) => {
         e.preventDefault();
-        navigate(`/browse/${id}`);
+        navigate(`/browse/${_id}`);
     };
+
+    const theme = getTheme(topic);
 
     return (
         <SCard className="cards__item">
@@ -33,7 +33,7 @@ export const Card = ({ theme, taskTitle, date, id }) => {
                 </div>
                 <div className="card__content">
                     <a href="" target="_blank">
-                        <h3 className="card__title">{taskTitle}</h3>
+                        <h3 className="card__title">{title}</h3>
                     </a>
                     <div className="card__date">
                         <svg

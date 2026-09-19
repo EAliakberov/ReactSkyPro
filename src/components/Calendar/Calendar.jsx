@@ -1,14 +1,79 @@
+import { useEffect, useMemo, useState } from 'react';
 import { SCalendar } from './Calendar.styled';
+import { ru } from 'date-fns/locale';
+import {
+    addDays,
+    addMonths,
+    endOfMonth,
+    endOfWeek,
+    format,
+    isSameDay,
+    isSameMonth,
+    isWeekend,
+    parse,
+    startOfMonth,
+    startOfWeek,
+    subMonths,
+} from 'date-fns';
 
-export const Calendar = () => {
+export const Calendar = ({ currentDate, onChange, isEditing }) => {
+    const initialDate = isNaN(currentDate?.getTime()) ? new Date() : new Date(currentDate);
+
+    const [selectedDate, setSelectedDate] = useState(initialDate);
+    const [currentMonth, setCurrentMonth] = useState(initialDate);
+
+    const table = useMemo(() => {
+        const monthStart = startOfMonth(currentMonth);
+        const monthEnd = endOfMonth(currentMonth);
+        const start = startOfWeek(monthStart, { weekStartsOn: 1 });
+        const end = endOfWeek(monthEnd, { weekEndsOn: 1 });
+
+        const days = [];
+        let day = start;
+
+        while (day <= end) {
+            days.push(day);
+            day = addDays(day, 1);
+        }
+        return days;
+    }, [currentMonth]);
+
+    useEffect(() => {
+        if (!isEditing) setSelectedDate(null);
+    }, [isEditing]);
+
+    const handlePrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
+    const handleNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
+
+    const monthLabel = format(currentMonth, 'LLLL yyyy', { locale: ru });
+    const normalizedMonthLabel = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
+
+    const getCellClass = (day) =>
+        [
+            'calendar__cell',
+            isSameMonth(day, currentMonth) ? '_cell-day' : '_other-month',
+            isWeekend(day) ? '_weekend' : '',
+            selectedDate && isSameDay(day, selectedDate) ? '_selected' : '',
+            isSameDay(day, initialDate) ? '_current' : '',
+        ]
+            .filter(Boolean) //отсеиваем пустые строки
+            .join(' ');
+
+    const handleSelectDate = async (day) => {
+        if (isEditing) {
+            setSelectedDate(day);
+            onChange(day);
+        }
+    };
+
     return (
         <SCalendar>
             <p className="calendar__ttl subttl">Даты</p>
             <div className="calendar__block">
                 <div className="calendar__nav">
-                    <div className="calendar__month">Сентябрь 2023</div>
+                    <div className="calendar__month">{normalizedMonthLabel}</div>
                     <div className="nav__actions">
-                        <div className="nav__action" data-action="prev">
+                        <div className="nav__action" data-action="prev" onClick={handlePrevMonth}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="6"
@@ -18,7 +83,7 @@ export const Calendar = () => {
                                 <path d="M5.72945 1.95273C6.09018 1.62041 6.09018 1.0833 5.72945 0.750969C5.36622 0.416344 4.7754 0.416344 4.41218 0.750969L0.528487 4.32883C-0.176162 4.97799 -0.176162 6.02201 0.528487 6.67117L4.41217 10.249C4.7754 10.5837 5.36622 10.5837 5.72945 10.249C6.09018 9.9167 6.09018 9.37959 5.72945 9.04727L1.87897 5.5L5.72945 1.95273Z" />
                             </svg>
                         </div>
-                        <div className="nav__action" data-action="next">
+                        <div className="nav__action" data-action="next" onClick={handleNextMonth}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="6"
@@ -41,40 +106,17 @@ export const Calendar = () => {
                         <div className="calendar__day-name -weekend-">вс</div>
                     </div>
                     <div className="calendar__cells">
-                        <div className="calendar__cell _other-month">28</div>
-                        <div className="calendar__cell _other-month">29</div>
-                        <div className="calendar__cell _other-month">30</div>
-                        <div className="calendar__cell _cell-day">31</div>
-                        <div className="calendar__cell _cell-day">1</div>
-                        <div className="calendar__cell _cell-day _weekend">2</div>
-                        <div className="calendar__cell _cell-day _weekend">3</div>
-                        <div className="calendar__cell _cell-day">4</div>
-                        <div className="calendar__cell _cell-day">5</div>
-                        <div className="calendar__cell _cell-day ">6</div>
-                        <div className="calendar__cell _cell-day">7</div>
-                        <div className="calendar__cell _cell-day _current">8</div>
-                        <div className="calendar__cell _cell-day _weekend">9</div>
-                        <div className="calendar__cell _cell-day _weekend">10</div>
-                        <div className="calendar__cell _cell-day">11</div>
-                        <div className="calendar__cell _cell-day">12</div>
-                        <div className="calendar__cell _cell-day">13</div>
-                        <div className="calendar__cell _cell-day">14</div>
-                        <div className="calendar__cell _cell-day">15</div>
-                        <div className="calendar__cell _cell-day _weekend">16</div>
-                        <div className="calendar__cell _cell-day _weekend">17</div>
-                        <div className="calendar__cell _cell-day">18</div>
-                        <div className="calendar__cell _cell-day">19</div>
-                        <div className="calendar__cell _cell-day">20</div>
-                        <div className="calendar__cell _cell-day">21</div>
-                        <div className="calendar__cell _cell-day">22</div>
-                        <div className="calendar__cell _cell-day _weekend">23</div>
-                        <div className="calendar__cell _cell-day _weekend">24</div>
-                        <div className="calendar__cell _cell-day">25</div>
-                        <div className="calendar__cell _cell-day">26</div>
-                        <div className="calendar__cell _cell-day">27</div>
-                        <div className="calendar__cell _cell-day">28</div>
-                        <div className="calendar__cell _cell-day">29</div>
-                        <div className="calendar__cell _cell-day _weekend">30</div>
+                        {table.map((day) => {
+                            return (
+                                <div
+                                    key={day.toISOString()}
+                                    className={getCellClass(day)}
+                                    onClick={() => handleSelectDate(day)}
+                                >
+                                    {format(day, 'd')}
+                                </div>
+                            );
+                        })}
                         <div className="calendar__cell _other-month _weekend">1</div>
                     </div>
                 </div>
@@ -82,7 +124,11 @@ export const Calendar = () => {
                 <input type="hidden" id="datepick_value" value="08.09.2023" />
                 <div className="calendar__period">
                     <p className="calendar__p date-end">
-                        Выберите срок исполнения <span className="date-control"></span>.
+                        {selectedDate ? 'Срок исполнения' : 'Выберите срок исполнения'}{' '}
+                        <span className="date-control">
+                            {selectedDate ? format(selectedDate, 'dd.MM.yy') : ''}
+                        </span>
+                        .
                     </p>
                 </div>
             </div>
