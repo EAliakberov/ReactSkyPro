@@ -4,10 +4,13 @@ import { Calendar } from '../Calendar/Calendar';
 import { Categories } from '../Categories/Categories';
 
 import { SPopNewCard } from './PopNewCard.styled';
-import { useState } from 'react';
-import { addTask } from '../../services/api';
+import { useContext, useState } from 'react';
 
-export const PopNewCard = ({ userData, setTasks }) => {
+import { TaskListContext } from '../../context/ContextAPI';
+
+export const PopNewCard = () => {
+    const { addTask } = useContext(TaskListContext);
+
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [newCard, setNewCard] = useState({
@@ -20,8 +23,7 @@ export const PopNewCard = ({ userData, setTasks }) => {
 
     const handleCreateTaskButtonClick = async () => {
         try {
-            const newTasks = await addTask(newCard, userData.token);
-            await setTasks(newTasks);
+            addTask(newCard);
             navigate('/');
         } catch {
             setError(new Error('Заполните все поля верно!'));

@@ -1,16 +1,20 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { SBlock, SBtnMainNew, SHeader, SLogo, SNav, SUser } from './Header.styled';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../context/ContextAPI';
 
-export const Header = ({ userData }) => {
+
+export const Header = () => {
     const [isPopUserVisible, setIsPopUserVisible] = useState(false);
     const [isPopNewCard, setIsPopNewCard] = useState(false);
+
+    const { userData } = useContext(UserContext);
 
     const navigate = useNavigate();
 
     const userBtnClick = (e) => {
         e.stopPropagation();
-        
+
         if (isPopUserVisible) {
             setIsPopUserVisible(false);
             navigate('/');

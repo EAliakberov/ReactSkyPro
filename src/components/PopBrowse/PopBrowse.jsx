@@ -1,24 +1,29 @@
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { Calendar } from '../Calendar/Calendar';
 import { Category } from '../Category/Category';
 import { SPopBrowse } from './PopBrowse.styled';
-import { getTheme } from '../../../data';
-import { deleteTask, editTask } from '../../services/api';
-import { useState } from 'react';
+import { getTheme, statusList } from '../../../data';
+import { useContext, useState, useEffect } from 'react';
+import { TaskListContext } from '../../context/ContextAPI';
 
-const statusList = ['Без статуса', 'Нужно сделать', 'В работе', 'Тестирование', 'Готово'];
+export const PopBrowse = () => {
+    const { editTask, deleteTask, tasksById } = useContext(TaskListContext);
 
-export const PopBrowse = ({ userData, setTasks }) => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const { tasksById } = useOutletContext();
+
     const currentTask = tasksById[id];
-    currentTask || navigate('/');
 
     const [error, setError] = useState(null);
-
     const [currentCard, setCurrentCard] = useState(taskToCard(currentTask));
+
+    useEffect(() => {
+        // Move the side effect (navigation) into useEffect
+        if (!currentTask) {
+            navigate('/some-path');
+        }
+    }, [currentTask, navigate]);
 
     function taskToCard(Task) {
         return {
@@ -30,6 +35,10 @@ export const PopBrowse = ({ userData, setTasks }) => {
         };
     }
 
+    /**
+     *
+     * @param {Event} e
+     */
     const closePopBrowse = (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -44,8 +53,6 @@ export const PopBrowse = ({ userData, setTasks }) => {
     //   "date": "2024-01-07T16:26:18.179Z",
     //   "description": "Подробное описание задачи",
     //   "status": "Без статуса"`;
-
-    console.log(currentTask, id);
 
     const theme = getTheme(currentTask.topic);
 
@@ -63,7 +70,6 @@ export const PopBrowse = ({ userData, setTasks }) => {
         setError(null);
 
         setCurrentCard({ ...currentCard, [e.target.name]: e.target.value });
-        console.log(JSON.stringify(currentCard));
     };
 
     const handleCancelClick = () => {
@@ -83,9 +89,7 @@ export const PopBrowse = ({ userData, setTasks }) => {
 
     const handleSaveButtonClick = async () => {
         try {
-            const newTasks = await editTask(currentCard, currentTask._id, userData.token);
-            console.log(newTasks);
-            setTasks(newTasks);
+            await editTask(currentCard, currentTask._id);
             navigate('/');
         } catch {
             setError(new Error('Заполните все поля верно!'));
@@ -93,8 +97,8 @@ export const PopBrowse = ({ userData, setTasks }) => {
     };
 
     async function handleDeleteButton() {
-        const newTasks = await deleteTask(currentTask._id, userData.token);
-        setTasks(newTasks);
+        deleteTask(currentTask._id);
+        navigate('/');
     }
 
     async function handleStatusButtonClick(status) {
@@ -116,7 +120,9 @@ export const PopBrowse = ({ userData, setTasks }) => {
                             <Category isActive={true} theme={theme} />
                         </div>
                         <div className="pop-browse__status status">
-                            <p className="status__p subttl">Статус</p>
+                            <p className="status__p subttl">
+                                {error ? `Статус ${error}` : 'Статус'}
+                            </p>
                             <div className="status__themes">
                                 {!isEditing ? (
                                     <div className="status__theme _gray">
@@ -201,10 +207,7 @@ export const PopBrowse = ({ userData, setTasks }) => {
                             </div>
                             <button
                                 className="btn-browse__close _btn-bg _hover01"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    closePopBrowse();
-                                }}
+                                onClick={closePopBrowse}
                             >
                                 Закрыть
                             </button>

@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_URL = 'https://wedev-api.sky.pro/api/kanban';
 const USER_API_URL = 'https://wedev-api.sky.pro/api/user';
 
-export async function getTasks(token) {
+export async function getTasksAPI(token) {
     try {
         const data = await axios.get(API_URL, {
             headers: {
@@ -17,7 +17,7 @@ export async function getTasks(token) {
     }
 }
 
-export async function getTask(taskId, token) {
+export async function getTaskAPI(taskId, token) {
     try {
         const data = await axios.get(`${API_URL}/${taskId}`, {
             headers: {
@@ -41,7 +41,7 @@ export async function getTask(taskId, token) {
  * @param {String} token - токен пользователя
  * @returns {Array}
  */
-export async function addTask(newTask, token) {
+export async function addTaskAPI(newTask, token) {
     try {
         const data = await axios.post(API_URL, newTask, {
             headers: {
@@ -67,7 +67,7 @@ export async function addTask(newTask, token) {
    @param {String} taskId - ID задачи
  * @returns {Array}
  */
-export async function editTask(newTask, taskId, token) {
+export async function editTaskAPI(newTask, taskId, token) {
     try {
         const data = await axios.put(`${API_URL}/${taskId}`, newTask, {
             headers: {
@@ -81,7 +81,7 @@ export async function editTask(newTask, taskId, token) {
     }
 }
 
-export async function deleteTask(taskId, token) {
+export async function deleteTaskAPI(taskId, token) {
     try {
         const data = await axios.delete(`${API_URL}/${taskId}`, {
             headers: {
@@ -94,7 +94,7 @@ export async function deleteTask(taskId, token) {
     }
 }
 
-export async function userGetUsers() {
+export async function userGetUsersAPI() {
     try {
         const data = await axios.post(USER_API_URL, { headers: { 'Content-Type': null } });
         return data.data?.users || [];
@@ -103,7 +103,7 @@ export async function userGetUsers() {
     }
 }
 
-export async function userLogin({ login, password }) {
+export async function userLoginAPI({ login, password }) {
     const loginData = { login, password };
 
     try {
@@ -116,7 +116,7 @@ export async function userLogin({ login, password }) {
     }
 }
 
-export async function userRegister({ login, name, password }) {
+export async function userRegisterAPI({ login, name, password }) {
     const registerData = { login, name, password };
     try {
         const data = await axios.post(USER_API_URL, registerData, {
@@ -124,7 +124,6 @@ export async function userRegister({ login, name, password }) {
         });
         return data.data?.user || {};
     } catch (err) {
-        console.log(err.response?.data.error);
         throw new Error(err.response?.data.error || err.message, { cause: err });
     }
 }
