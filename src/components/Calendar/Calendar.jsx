@@ -39,7 +39,7 @@ export const Calendar = ({ currentDate, onChange, isEditing }) => {
     }, [currentMonth]);
 
     useEffect(() => {
-        if (!isEditing) setSelectedDate(null);
+        setSelectedDate(isEditing ? null : initialDate);
     }, [isEditing]);
 
     const handlePrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));

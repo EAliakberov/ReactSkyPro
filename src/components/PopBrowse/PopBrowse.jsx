@@ -9,21 +9,12 @@ import { TaskListContext } from '../../context/ContextAPI';
 
 export const PopBrowse = () => {
     const { editTask, deleteTask, tasksById } = useContext(TaskListContext);
-
+    const [error, setError] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
 
     const currentTask = tasksById[id];
-
-    const [error, setError] = useState(null);
-    const [currentCard, setCurrentCard] = useState(taskToCard(currentTask));
-
-    useEffect(() => {
-        // Move the side effect (navigation) into useEffect
-        if (!currentTask) {
-            navigate('/some-path');
-        }
-    }, [currentTask, navigate]);
 
     function taskToCard(Task) {
         return {
@@ -35,46 +26,49 @@ export const PopBrowse = () => {
         };
     }
 
-    /**
-     *
-     * @param {Event} e
-     */
-    const closePopBrowse = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        navigate('/');
-    };
-    const [isEditing, setIsEditing] = useState(false);
+    const [currentCard, setCurrentCard] = useState(() => {
+        if (currentTask) {
+            return taskToCard(currentTask);
+        } else return null;
+    });
 
-    // ` "_id": "659ad0aad0e154bebca2b6b3",
-    //   "userId": "659abd3ad0e154bebca2b6b7",
-    //   "title": "Новая задача 1!",
-    //   "topic": "Research",
-    //   "date": "2024-01-07T16:26:18.179Z",
-    //   "description": "Подробное описание задачи",
-    //   "status": "Без статуса"`;
+    useEffect(() => {
+        if (!currentTask) {
+            navigate('/');
+        }
+    }, [currentTask, navigate]);
+
+    useEffect(() => {
+        if (currentTask) {
+            setCurrentCard(taskToCard(currentTask));
+        }
+    }, [currentTask]);
+
+    if (!currentTask) {
+        return null;
+    }
 
     const theme = getTheme(currentTask.topic);
 
-    const handleEditTaskButtonClick = async () => {
-        setIsEditing(true);
+    const closePopBrowse = (e) => {
+        e.preventDefault();
+        navigate('/');
     };
 
-    /**
-     *
-     * @param {Event} e
-     */
     const handleInputChange = (e) => {
         //e.preventDefault();
         e.stopPropagation();
         setError(null);
-
         setCurrentCard({ ...currentCard, [e.target.name]: e.target.value });
     };
 
     const handleCancelClick = () => {
         setCurrentCard(taskToCard(currentTask));
         setIsEditing(false);
+    };
+
+    const handleEditTaskButtonClick = async () => {
+        setIsEditing(true);
     };
 
     /**
@@ -97,8 +91,12 @@ export const PopBrowse = () => {
     };
 
     async function handleDeleteButton() {
-        deleteTask(currentTask._id);
-        navigate('/');
+        try {
+            await deleteTask(currentTask._id);
+            navigate('/');
+        } catch {
+            setError(new Error('Не удалось удалить задачу'));
+        }
     }
 
     async function handleStatusButtonClick(status) {
@@ -106,23 +104,36 @@ export const PopBrowse = () => {
     }
 
     return (
-        <SPopBrowse className="pop-browse" id="popBrowse" onClick={closePopBrowse}>
+        <SPopBrowse
+            className="pop-browse"
+            id="popBrowse"
+            onMouseDown={(e) => {
+                const isClickInsidePopup = e.target.closest('.pop-browse__block');
+                if (!isClickInsidePopup) {
+                    e.currentTarget.dataset.shouldClose = 'true';
+                } else {
+                    e.currentTarget.dataset.shouldClose = 'false';
+                }
+            }}
+            onMouseUp={(e) => {
+                // Проверяем, где ОТПУСТИЛИ мышь
+                const isReleaseInsidePopup = e.target.closest('.pop-browse__block');
+                if (e.currentTarget.dataset.shouldClose === 'true' && !isReleaseInsidePopup) {
+                    closePopBrowse(e);
+                }
+                e.currentTarget.dataset.shouldClose = 'false';
+            }}
+        >
             <div className="pop-browse__container">
-                <div
-                    className="pop-browse__block"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                    }}
-                >
+                <div className="pop-browse__block">
                     <div className="pop-browse__content">
                         <div className="pop-browse__top-block">
                             <h3 className="pop-browse__ttl">{currentCard.title}</h3>
                             <Category isActive={true} theme={theme} />
                         </div>
                         <div className="pop-browse__status status">
-                            <p className="status__p subttl">
-                                {error ? `Статус ${error}` : 'Статус'}
-                            </p>
+                            {error && <p style={{ color: 'red' }}>{error?.message}</p>}
+                            <p className="status__p subttl">Статус</p>
                             <div className="status__themes">
                                 {!isEditing ? (
                                     <div className="status__theme _gray">
@@ -166,6 +177,7 @@ export const PopBrowse = () => {
                                         placeholder="Введите описание задачи..."
                                         value={currentCard.description || ''}
                                         onChange={handleInputChange}
+                                        style={error ? { outline: 'solid 1px red' } : undefined}
                                     ></textarea>
                                 </div>
                             </form>
@@ -229,6 +241,11 @@ export const PopBrowse = () => {
                                 <button
                                     className="btn-edit__delete _btn-bor _hover03"
                                     id="btnDelete"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        handleDeleteButton();
+                                    }}
                                 >
                                     Удалить задачу
                                 </button>

@@ -54,9 +54,9 @@ export const TaskListContextProvider = ({ children }) => {
     const addTask = async (newCard) => {
         try {
             const newTasks = await addTaskAPI(newCard, userData.token);
-            await setTasks(newTasks);
-        } catch {
-            setError(new Error('Заполните все поля верно!'));
+            setTasks(newTasks);
+        } catch (err) {
+            throw new Error(err.message, { cause: err });
         }
     };
 

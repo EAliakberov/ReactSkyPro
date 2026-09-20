@@ -21,9 +21,14 @@ export const PopNewCard = () => {
         date: '2024-01-07T16:26:18.179Z',
     });
 
+    const closePopBrowse = (e) => {
+        e.preventDefault();
+        navigate('/');
+    };
+
     const handleCreateTaskButtonClick = async () => {
         try {
-            addTask(newCard);
+            await addTask(newCard);
             navigate('/');
         } catch {
             setError(new Error('Заполните все поля верно!'));
@@ -50,7 +55,26 @@ export const PopNewCard = () => {
     };
 
     return (
-        <SPopNewCard className="pop-new-card" id="popNewCard">
+        <SPopNewCard
+            className="pop-new-card"
+            id="popNewCard"
+            onMouseDown={(e) => {
+                const isClickInsidePopup = e.target.closest('.pop-new-card__block');
+                if (!isClickInsidePopup) {
+                    e.currentTarget.dataset.shouldClose = 'true';
+                } else {
+                    e.currentTarget.dataset.shouldClose = 'false';
+                }
+            }}
+            onMouseUp={(e) => {
+                // Проверяем, где ОТПУСТИЛИ мышь
+                const isReleaseInsidePopup = e.target.closest('.pop-new-card__block');
+                if (e.currentTarget.dataset.shouldClose === 'true' && !isReleaseInsidePopup) {
+                    closePopBrowse(e);
+                }
+                e.currentTarget.dataset.shouldClose = 'false';
+            }}
+        >
             <div className="pop-new-card__container">
                 <div className="pop-new-card__block">
                     <div className="pop-new-card__content">
