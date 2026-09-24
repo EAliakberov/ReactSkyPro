@@ -1,12 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { SPopExit } from './PopExit.styled';
+import { useContext } from 'react';
+import { UserContext } from '../../context/ContextAPI';
 
-export const PopExit = ({ setUserData }) => {
+export const PopExit = () => {
+    const { logOut } = useContext(UserContext);
     const navigate = useNavigate();
+    
     const singOut = (e) => {
         e.stopPropagation();
         e.preventDefault();
-        setUserData(null);
+        logOut();
         navigate('/');
     };
 

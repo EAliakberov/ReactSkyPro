@@ -8,7 +8,6 @@ export const statusList = ['Без статуса', 'Нужно сделать',
 
 export const getTheme = (topic) => {
     const theme = themes[topic.toLowerCase()];
-    console.log(topic);
 
     return theme || { name: '', style: '' };
 };

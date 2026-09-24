@@ -4,10 +4,13 @@ import { Calendar } from '../Calendar/Calendar';
 import { Categories } from '../Categories/Categories';
 
 import { SPopNewCard } from './PopNewCard.styled';
-import { useState } from 'react';
-import { addTask } from '../../services/api';
+import { useContext, useState } from 'react';
 
-export const PopNewCard = ({ userData, setTasks }) => {
+import { TaskListContext } from '../../context/ContextAPI';
+
+export const PopNewCard = () => {
+    const { addTask } = useContext(TaskListContext);
+
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [newCard, setNewCard] = useState({
@@ -18,10 +21,14 @@ export const PopNewCard = ({ userData, setTasks }) => {
         date: '2024-01-07T16:26:18.179Z',
     });
 
+    const closePopBrowse = (e) => {
+        e.preventDefault();
+        navigate('/');
+    };
+
     const handleCreateTaskButtonClick = async () => {
         try {
-            const newTasks = await addTask(newCard, userData.token);
-            await setTasks(newTasks);
+            await addTask(newCard);
             navigate('/');
         } catch {
             setError(new Error('Заполните все поля верно!'));
@@ -48,7 +55,26 @@ export const PopNewCard = ({ userData, setTasks }) => {
     };
 
     return (
-        <SPopNewCard className="pop-new-card" id="popNewCard">
+        <SPopNewCard
+            className="pop-new-card"
+            id="popNewCard"
+            onMouseDown={(e) => {
+                const isClickInsidePopup = e.target.closest('.pop-new-card__block');
+                if (!isClickInsidePopup) {
+                    e.currentTarget.dataset.shouldClose = 'true';
+                } else {
+                    e.currentTarget.dataset.shouldClose = 'false';
+                }
+            }}
+            onMouseUp={(e) => {
+                // Проверяем, где ОТПУСТИЛИ мышь
+                const isReleaseInsidePopup = e.target.closest('.pop-new-card__block');
+                if (e.currentTarget.dataset.shouldClose === 'true' && !isReleaseInsidePopup) {
+                    closePopBrowse(e);
+                }
+                e.currentTarget.dataset.shouldClose = 'false';
+            }}
+        >
             <div className="pop-new-card__container">
                 <div className="pop-new-card__block">
                     <div className="pop-new-card__content">

@@ -5,17 +5,17 @@ export const SMain = styled.main`
     background-color: #eaeef6;
 
     .container {
-        max-width: none;
+        max-width: 1260px;
         min-width: fit-content;
     }
 
     .main__block {
-        width: fit-content;
+        width: 100%;
         margin: 0 auto;
         padding: 25px 0 49px;
     }
     .main__content {
-        min-width: fit-content;
+        min-width: 100%;
         display: flex;
     }
     .main__column {

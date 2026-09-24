@@ -1,10 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { SModal, SWrapper } from './SignInUp.styled';
 import { GlobalStyle } from '../../App.styled';
-import { useEffect, useState } from 'react';
-import { userLogin, userRegister } from '../../services/api';
+import { useContext, useState } from 'react';
+import { UserContext } from '../../context/ContextAPI';
 
-export const SingInUp = ({ isSignIn, setUserData }) => {
+export const SingInUp = ({ isSignIn }) => {
+    const { logIn, signUp } = useContext(UserContext);
+
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         login: '',
@@ -19,12 +21,11 @@ export const SingInUp = ({ isSignIn, setUserData }) => {
         name: false,
     });
 
-   
-    function isFieldsOk() {
+    function isFieldsOk(data) {
         const errors = {
-            login: formData.login?.length < 3,
-            password: formData.password?.length < 8,
-            name: formData.name?.length < 3,
+            login: data.login?.length < 3,
+            password: data.password?.length < 8,
+            name: data.name?.length < 3,
         };
 
         setFormErrors(errors);
@@ -32,7 +33,7 @@ export const SingInUp = ({ isSignIn, setUserData }) => {
         return !errors.login && !errors.password && !errors.name;
     }
 
-    const logIn = async (e) => {
+    const handleLogIn = async (e) => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -40,23 +41,20 @@ export const SingInUp = ({ isSignIn, setUserData }) => {
         const login = form.login.value;
         const password = form.password.value;
 
-        await setFormData({ login, password, name: 'login' });
-        isFieldsOk();
 
-        // Отправляем данные напрямую
-        userLogin({ login, password })
-            .then((userData) => {
-                setUserData(userData);
-                navigate('/');
-            })
-            .catch((err) => {
-                setFormErrors({
-                    login: true,
-                    password: true,
-                    name: true,
-                });
-                setError(err);
+        setFormData({ login, password, name: 'login' });
+        if (!isFieldsOk({ login, password, name: 'login' })) return;
+
+        try {
+            await logIn({ login, password });
+        } catch (err) {
+            setFormErrors({
+                login: true,
+                password: true,
+                name: true,
             });
+            setError(err);
+        }
     };
 
     const handleSignUp = async (e) => {
@@ -71,7 +69,7 @@ export const SingInUp = ({ isSignIn, setUserData }) => {
         setFormData({ login, password, name });
 
         // Проверка полей
-        let isOk = await isFieldsOk();
+        let isOk = isFieldsOk({ login, password, name });
 
         if (!isOk) {
             setError(new Error('Поля заполнены неправильно'));
@@ -79,8 +77,7 @@ export const SingInUp = ({ isSignIn, setUserData }) => {
         }
 
         try {
-            const userData = await userRegister({ login, password, name });
-            setUserData(userData);
+            await signUp({ login, password, name });
             navigate('/');
         } catch (err) {
             setError(err);
@@ -89,7 +86,7 @@ export const SingInUp = ({ isSignIn, setUserData }) => {
 
     const handleInputChange = async (e) => {
         const { name, value } = e.target;
-        await setFormData((prev) => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
         setFormErrors((prev) => ({ ...prev, [name]: false }));
     };
 
@@ -108,7 +105,7 @@ export const SingInUp = ({ isSignIn, setUserData }) => {
                                 className="modal__form-login"
                                 id="formLogIn"
                                 action="#"
-                                onSubmit={logIn}
+                                onSubmit={handleLogIn}
                             >
                                 <input
                                     value={formData.login}

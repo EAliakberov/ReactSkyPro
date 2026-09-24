@@ -1,24 +1,20 @@
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { Calendar } from '../Calendar/Calendar';
 import { Category } from '../Category/Category';
 import { SPopBrowse } from './PopBrowse.styled';
-import { getTheme } from '../../../data';
-import { deleteTask, editTask } from '../../services/api';
-import { useState } from 'react';
+import { getTheme, statusList } from '../../../data';
+import { useContext, useState, useEffect } from 'react';
+import { TaskListContext } from '../../context/ContextAPI';
 
-const statusList = ['Без статуса', 'Нужно сделать', 'В работе', 'Тестирование', 'Готово'];
-
-export const PopBrowse = ({ userData, setTasks }) => {
+export const PopBrowse = () => {
+    const { editTask, deleteTask, tasksById } = useContext(TaskListContext);
+    const [error, setError] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
-    const { tasksById } = useOutletContext();
+
     const currentTask = tasksById[id];
-    currentTask || navigate('/');
-
-    const [error, setError] = useState(null);
-
-    const [currentCard, setCurrentCard] = useState(taskToCard(currentTask));
 
     function taskToCard(Task) {
         return {
@@ -30,45 +26,49 @@ export const PopBrowse = ({ userData, setTasks }) => {
         };
     }
 
-    const closePopBrowse = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        navigate('/');
-    };
-    const [isEditing, setIsEditing] = useState(false);
+    const [currentCard, setCurrentCard] = useState(() => {
+        if (currentTask) {
+            return taskToCard(currentTask);
+        } else return null;
+    });
 
-    // ` "_id": "659ad0aad0e154bebca2b6b3",
-    //   "userId": "659abd3ad0e154bebca2b6b7",
-    //   "title": "Новая задача 1!",
-    //   "topic": "Research",
-    //   "date": "2024-01-07T16:26:18.179Z",
-    //   "description": "Подробное описание задачи",
-    //   "status": "Без статуса"`;
+    useEffect(() => {
+        if (!currentTask) {
+            navigate('/');
+        }
+    }, [currentTask, navigate]);
 
-    console.log(currentTask, id);
+    useEffect(() => {
+        if (currentTask) {
+            setCurrentCard(taskToCard(currentTask));
+        }
+    }, [currentTask]);
+
+    if (!currentTask) {
+        return null;
+    }
 
     const theme = getTheme(currentTask.topic);
 
-    const handleEditTaskButtonClick = async () => {
-        setIsEditing(true);
+    const closePopBrowse = (e) => {
+        e.preventDefault();
+        navigate('/');
     };
 
-    /**
-     *
-     * @param {Event} e
-     */
     const handleInputChange = (e) => {
         //e.preventDefault();
         e.stopPropagation();
         setError(null);
-
         setCurrentCard({ ...currentCard, [e.target.name]: e.target.value });
-        console.log(JSON.stringify(currentCard));
     };
 
     const handleCancelClick = () => {
         setCurrentCard(taskToCard(currentTask));
         setIsEditing(false);
+    };
+
+    const handleEditTaskButtonClick = async () => {
+        setIsEditing(true);
     };
 
     /**
@@ -83,9 +83,7 @@ export const PopBrowse = ({ userData, setTasks }) => {
 
     const handleSaveButtonClick = async () => {
         try {
-            const newTasks = await editTask(currentCard, currentTask._id, userData.token);
-            console.log(newTasks);
-            setTasks(newTasks);
+            await editTask(currentCard, currentTask._id);
             navigate('/');
         } catch {
             setError(new Error('Заполните все поля верно!'));
@@ -93,8 +91,12 @@ export const PopBrowse = ({ userData, setTasks }) => {
     };
 
     async function handleDeleteButton() {
-        const newTasks = await deleteTask(currentTask._id, userData.token);
-        setTasks(newTasks);
+        try {
+            await deleteTask(currentTask._id);
+            navigate('/');
+        } catch {
+            setError(new Error('Не удалось удалить задачу'));
+        }
     }
 
     async function handleStatusButtonClick(status) {
@@ -102,20 +104,35 @@ export const PopBrowse = ({ userData, setTasks }) => {
     }
 
     return (
-        <SPopBrowse className="pop-browse" id="popBrowse" onClick={closePopBrowse}>
+        <SPopBrowse
+            className="pop-browse"
+            id="popBrowse"
+            onMouseDown={(e) => {
+                const isClickInsidePopup = e.target.closest('.pop-browse__block');
+                if (!isClickInsidePopup) {
+                    e.currentTarget.dataset.shouldClose = 'true';
+                } else {
+                    e.currentTarget.dataset.shouldClose = 'false';
+                }
+            }}
+            onMouseUp={(e) => {
+                // Проверяем, где ОТПУСТИЛИ мышь
+                const isReleaseInsidePopup = e.target.closest('.pop-browse__block');
+                if (e.currentTarget.dataset.shouldClose === 'true' && !isReleaseInsidePopup) {
+                    closePopBrowse(e);
+                }
+                e.currentTarget.dataset.shouldClose = 'false';
+            }}
+        >
             <div className="pop-browse__container">
-                <div
-                    className="pop-browse__block"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                    }}
-                >
+                <div className="pop-browse__block">
                     <div className="pop-browse__content">
                         <div className="pop-browse__top-block">
                             <h3 className="pop-browse__ttl">{currentCard.title}</h3>
                             <Category isActive={true} theme={theme} />
                         </div>
                         <div className="pop-browse__status status">
+                            {error && <p style={{ color: 'red' }}>{error?.message}</p>}
                             <p className="status__p subttl">Статус</p>
                             <div className="status__themes">
                                 {!isEditing ? (
@@ -160,6 +177,7 @@ export const PopBrowse = ({ userData, setTasks }) => {
                                         placeholder="Введите описание задачи..."
                                         value={currentCard.description || ''}
                                         onChange={handleInputChange}
+                                        style={error ? { outline: 'solid 1px red' } : undefined}
                                     ></textarea>
                                 </div>
                             </form>
@@ -201,10 +219,7 @@ export const PopBrowse = ({ userData, setTasks }) => {
                             </div>
                             <button
                                 className="btn-browse__close _btn-bg _hover01"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    closePopBrowse();
-                                }}
+                                onClick={closePopBrowse}
                             >
                                 Закрыть
                             </button>
@@ -226,6 +241,11 @@ export const PopBrowse = ({ userData, setTasks }) => {
                                 <button
                                     className="btn-edit__delete _btn-bor _hover03"
                                     id="btnDelete"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        handleDeleteButton();
+                                    }}
                                 >
                                     Удалить задачу
                                 </button>
