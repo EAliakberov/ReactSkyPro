@@ -3,6 +3,8 @@ import styled from 'styled-components';
 export const SMain = styled.main`
     min-width: fit-content;
     background-color: #eaeef6;
+    min-height: 100%;
+    flex-grow: 1;
 
     .container {
         max-width: 1260px;
@@ -24,6 +26,10 @@ export const SMain = styled.main`
         display: block;
     }
 
+    .main_message {
+        text-align: center;
+        margin-top: 40px;
+    }
     @media screen and (max-width: 1200px) {
         .main__column {
             width: 100%;

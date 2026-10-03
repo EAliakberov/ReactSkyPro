@@ -1,18 +1,23 @@
-# React + Vite
+# Sky Words — канбан-доска для управления задачами
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Веб-приложение для планирования и отслеживания задач в формате канбан-доски. Проект написан на **React** с использованием **Vite**, стилизация выполнена на **styled-components**, а данные хранятся на сервере SkyPro (API Kanban).
 
-Currently, two official plugins are available:
+## Возможности
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Регистрация и авторизация** — вход в систему через сервер SkyPro, защищённые маршруты
+- **Канбан-колонки** — задачи распределены по статусам: *Без статуса*, *Нужно сделать*, *В работе*, *Тестирование*, *Готово*
+- **Управление задачами** — создание, редактирование и удаление карточек
+- **Просмотр задачи** — модальное окно с подробным описанием и редактированием
+- **Темы карточек** — категории: Web Design, Research, Copywriting
+- **Календарь** — выбор срока выполнения задачи
+- **Адаптивная вёрстка** — корректное отображение на мобильных устройствах
 
-## React Compiler
+## Технологии
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- [React 19](https://react.dev/) + React Compiler
+- [Vite](https://vite.dev/)
+- [React Router](https://reactrouter.com/)
+- [styled-components](https://styled-components.com/)
+- [axios](https://axios-http.com/) — работа с API
+- [date-fns](https://date-fns.org/) — работа с датами
+- [ESLint](https://eslint.org/)

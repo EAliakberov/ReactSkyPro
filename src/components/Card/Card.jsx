@@ -5,7 +5,7 @@ import { getTheme } from '../../../data';
 export const Card = (card) => {
     const navigate = useNavigate();
 
-    const { _id, userId, title, topic, date, description, status } = card;
+    const { _id, title, topic, date} = card;
 
     const formattedDate = new Date(date).toLocaleDateString();
 

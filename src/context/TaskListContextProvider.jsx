@@ -62,7 +62,7 @@ export const TaskListContextProvider = ({ children }) => {
 
     return (
         <TaskListContext.Provider
-            value={{ tasks, editTask, loadTasks, deleteTask, tasksById, addTask }}
+            value={{ tasks, editTask, loadTasks, deleteTask, tasksById, addTask, error }}
         >
             {children}
         </TaskListContext.Provider>

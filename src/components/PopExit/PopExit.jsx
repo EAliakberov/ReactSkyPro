@@ -6,7 +6,7 @@ import { UserContext } from '../../context/ContextAPI';
 export const PopExit = () => {
     const { logOut } = useContext(UserContext);
     const navigate = useNavigate();
-    
+
     const singOut = (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -14,7 +14,7 @@ export const PopExit = () => {
         navigate('/');
     };
 
-    const cancelSingOut = (e) => {
+    const cancelSignOut = (e) => {
         e.stopPropagation();
         e.preventDefault();
         navigate('/');
@@ -39,7 +39,7 @@ export const PopExit = () => {
                             <button
                                 className="pop-exit__exit-no _hover03"
                                 id="exitNo"
-                                onClick={cancelSingOut}
+                                onClick={cancelSignOut}
                             >
                                 <a
                                     onClick={(e) => {

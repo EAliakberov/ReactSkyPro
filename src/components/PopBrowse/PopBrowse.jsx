@@ -6,6 +6,7 @@ import { SPopBrowse } from './PopBrowse.styled';
 import { getTheme, statusList } from '../../../data';
 import { useContext, useState, useEffect } from 'react';
 import { TaskListContext } from '../../context/ContextAPI';
+import { GlobalStyle } from '../../App.styled';
 
 export const PopBrowse = () => {
     const { editTask, deleteTask, tasksById } = useContext(TaskListContext);
@@ -26,23 +27,38 @@ export const PopBrowse = () => {
         };
     }
 
-    const [currentCard, setCurrentCard] = useState(() => {
-        if (currentTask) {
-            return taskToCard(currentTask);
-        } else return null;
-    });
+    function areFieldsOK(card) {
+        function isFieldOK(text) {
+            return (
+                typeof text === 'string' &&
+                [...text].some((char) => ![' ', '\t', '\n'].includes(char))
+            );
+        }
+
+        return !!(
+            isFieldOK(card.title) &&
+            isFieldOK(card.topic) &&
+            isFieldOK(card.status) &&
+            isFieldOK(card.description) &&
+            !!card.date
+        );
+    }
+
+    const [prevTask, setPrevTask] = useState(currentTask);
+    const [currentCard, setCurrentCard] = useState(() =>
+        currentTask ? taskToCard(currentTask) : null
+    );
+
+    if (currentTask !== prevTask) {
+        setPrevTask(currentTask);
+        setCurrentCard(currentTask ? taskToCard(currentTask) : null);
+    }
 
     useEffect(() => {
         if (!currentTask) {
             navigate('/');
         }
     }, [currentTask, navigate]);
-
-    useEffect(() => {
-        if (currentTask) {
-            setCurrentCard(taskToCard(currentTask));
-        }
-    }, [currentTask]);
 
     if (!currentTask) {
         return null;
@@ -56,7 +72,6 @@ export const PopBrowse = () => {
     };
 
     const handleInputChange = (e) => {
-        //e.preventDefault();
         e.stopPropagation();
         setError(null);
         setCurrentCard({ ...currentCard, [e.target.name]: e.target.value });
@@ -67,7 +82,7 @@ export const PopBrowse = () => {
         setIsEditing(false);
     };
 
-    const handleEditTaskButtonClick = async () => {
+    const handleEditTaskButtonClick = () => {
         setIsEditing(true);
     };
 
@@ -82,11 +97,15 @@ export const PopBrowse = () => {
     };
 
     const handleSaveButtonClick = async () => {
+        if (!areFieldsOK(currentCard)) {
+            setError(new Error('Заполните все поля верно!'));
+            return;
+        }
         try {
             await editTask(currentCard, currentTask._id);
             navigate('/');
-        } catch {
-            setError(new Error('Заполните все поля верно!'));
+        } catch (err) {
+            setError(err);
         }
     };
 
@@ -99,7 +118,7 @@ export const PopBrowse = () => {
         }
     }
 
-    async function handleStatusButtonClick(status) {
+    function handleStatusButtonClick(status) {
         setCurrentCard({ ...currentCard, status: status });
     }
 
@@ -124,6 +143,7 @@ export const PopBrowse = () => {
                 e.currentTarget.dataset.shouldClose = 'false';
             }}
         >
+            <GlobalStyle />
             <div className="pop-browse__container">
                 <div className="pop-browse__block">
                     <div className="pop-browse__content">
@@ -200,7 +220,6 @@ export const PopBrowse = () => {
                                     className="btn-browse__edit _btn-bor _hover03"
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        e.stopPropagation();
                                         handleEditTaskButtonClick();
                                     }}
                                 >
@@ -210,7 +229,6 @@ export const PopBrowse = () => {
                                     className="btn-browse__delete _btn-bor _hover03"
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        e.stopPropagation();
                                         handleDeleteButton();
                                     }}
                                 >
@@ -243,7 +261,6 @@ export const PopBrowse = () => {
                                     id="btnDelete"
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        e.stopPropagation();
                                         handleDeleteButton();
                                     }}
                                 >

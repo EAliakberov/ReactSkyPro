@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { SCalendar } from './Calendar.styled';
 import { ru } from 'date-fns/locale';
 import {
@@ -10,7 +10,6 @@ import {
     isSameDay,
     isSameMonth,
     isWeekend,
-    parse,
     startOfMonth,
     startOfWeek,
     subMonths,
@@ -19,8 +18,10 @@ import {
 export const Calendar = ({ currentDate, onChange, isEditing }) => {
     const initialDate = isNaN(currentDate?.getTime()) ? new Date() : new Date(currentDate);
 
-    const [selectedDate, setSelectedDate] = useState(initialDate);
+    const [pickedDate, setPickedDate] = useState(null);
     const [currentMonth, setCurrentMonth] = useState(initialDate);
+
+    const selectedDate = isEditing ? pickedDate : initialDate;
 
     const table = useMemo(() => {
         const monthStart = startOfMonth(currentMonth);
@@ -38,10 +39,6 @@ export const Calendar = ({ currentDate, onChange, isEditing }) => {
         return days;
     }, [currentMonth]);
 
-    useEffect(() => {
-        setSelectedDate(isEditing ? null : initialDate);
-    }, [isEditing]);
-
     const handlePrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
     const handleNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
 
@@ -56,12 +53,12 @@ export const Calendar = ({ currentDate, onChange, isEditing }) => {
             selectedDate && isSameDay(day, selectedDate) ? '_selected' : '',
             isSameDay(day, initialDate) ? '_current' : '',
         ]
-            .filter(Boolean) //отсеиваем пустые строки
+            .filter(Boolean)
             .join(' ');
 
     const handleSelectDate = async (day) => {
         if (isEditing) {
-            setSelectedDate(day);
+            setPickedDate(day);
             onChange(day);
         }
     };

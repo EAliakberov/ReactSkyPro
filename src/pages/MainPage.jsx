@@ -5,7 +5,10 @@ import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 
 const SWrapper = styled.div`
-    display: block;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
     position: relative;
     margin: 0;
     padding: 0;

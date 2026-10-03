@@ -7,15 +7,17 @@ import { PopNewCardPage } from '../pages/PopNewCardPage.jsx';
 import { PopUserPage } from '../pages/PopUserPage.jsx';
 import { ErrorPage } from '../pages/ErrorPage.jsx';
 import { PrivatePage } from '../pages/PrivatePage.jsx';
-import { SingInUp } from './SingInUp/SingInUp.jsx';
+import { SignInUp } from './SignInUp/SignInUp.jsx';
 import { useContext } from 'react';
 import { UserContext } from '../context/ContextAPI.jsx';
+import { GlobalStyle } from '../App.styled.js';
 
 export const AppRoutes = () => {
     const { userData } = useContext(UserContext);
 
     return (
         <Routes>
+            
             <Route element={<PrivatePage />}>
                 <Route path="/" element={<MainPage />}>
                     <Route path="/browse/:id" element={<PopBrowsePage />} />
@@ -27,11 +29,11 @@ export const AppRoutes = () => {
 
             <Route
                 path="/signin"
-                element={userData ? <Navigate to="/" replace /> : <SingInUp isSignIn={true} />}
+                element={userData ? <Navigate to="/" replace /> : <SignInUp isSignIn={true} />}
             />
             <Route
                 path="/signup"
-                element={userData ? <Navigate to="/" replace /> : <SingInUp isSignIn={false} />}
+                element={userData ? <Navigate to="/" replace /> : <SignInUp isSignIn={false} />}
             />
             <Route path="/*" element={<ErrorPage />} />
         </Routes>
