@@ -4,26 +4,24 @@ import { SMain } from './Main.styled';
 import { statusList } from '../../../data';
 import { useNavigate } from 'react-router-dom';
 import { TaskListContext } from '../../context/ContextAPI';
+import { EmptyColumn } from '../EmptyColumn/EmptyColumn';
 
 export const Main = () => {
     const navigate = useNavigate();
     const { tasks, loadTasks, error: taskError } = useContext(TaskListContext);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
-    //поправить позже
     useEffect(() => {
-        setIsLoading(true);
         loadTasks()
-            .then(() => {})
             .catch(() => {
-                setError(taskError);
                 navigate('/signin');
             })
             .finally(() => {
-                setIsLoading(false);
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, 1000);
             });
-    }, []);
+    }, [loadTasks, navigate]);
 
     const groupedTasks = useMemo(() => {
         return Object.groupBy(tasks, (card) => card.status?.toLowerCase() || 'без статуса');
@@ -33,7 +31,8 @@ export const Main = () => {
         <SMain className="main">
             <div className="container">
                 <div className="main__block">
-                    {!isLoading && !error ? (
+                    {tasks.length <= 0 ? <div className="main_message">Новых задач нет</div> : null}
+                    {!isLoading && !taskError ? (
                         <div className="main__content">
                             {statusList.map((status) => {
                                 return (
@@ -46,10 +45,22 @@ export const Main = () => {
                             })}
                         </div>
                     ) : (
-                        !error && (
-                            <div style={{ textAlign: 'center' }}>Подождите, идет загрузка...</div>
+                        !taskError && (
+                            <div className="main__content">
+                                {statusList.map((status, i) => {
+                                    const a = [5, 1, 3, 1, 1];
+                                    return (
+                                        <EmptyColumn
+                                            cardsCount={a[i] || 1}
+                                            status={status}
+                                            key={status}
+                                        ></EmptyColumn>
+                                    );
+                                })}
+                            </div>
                         )
                     )}
+                    
                 </div>
             </div>
         </SMain>

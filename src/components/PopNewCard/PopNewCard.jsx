@@ -18,7 +18,7 @@ export const PopNewCard = () => {
         topic: 'Research',
         status: 'Без статуса',
         description: '',
-        date: '2024-01-07T16:26:18.179Z',
+        date: new Date().toISOString,
     });
 
     const closePopBrowse = (e) => {
@@ -26,12 +26,34 @@ export const PopNewCard = () => {
         navigate('/');
     };
 
+    function areFieldsOK(card) {
+        function isFieldOK(text) {
+            return (
+                typeof text === 'string' &&
+                [...text].some((char) => ![' ', '\t', '\n'].includes(char))
+            );
+        }
+
+        return !!(
+            isFieldOK(card.title) &&
+            isFieldOK(card.topic) &&
+            isFieldOK(card.status) &&
+            isFieldOK(card.description) &&
+            !!card.date
+        );
+    }
+
     const handleCreateTaskButtonClick = async () => {
+        if (!areFieldsOK(newCard)) {
+            setError(new Error('Заполните все поля верно!'));
+            return;
+        }
         try {
             await addTask(newCard);
             navigate('/');
-        } catch {
-            setError(new Error('Заполните все поля верно!'));
+            setError(null);
+        } catch (err) {
+            setError(err);
         }
     };
 

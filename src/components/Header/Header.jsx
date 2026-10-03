@@ -1,8 +1,7 @@
 import { useContext, useState } from 'react';
 import { SBlock, SBtnMainNew, SHeader, SLogo, SNav, SUser } from './Header.styled';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/ContextAPI';
-
 
 export const Header = () => {
     const [isPopUserVisible, setIsPopUserVisible] = useState(false);
@@ -39,9 +38,9 @@ export const Header = () => {
             <div className="container">
                 <SBlock className="header__block">
                     <SLogo className="header__logo _show _light">
-                        <a href="" target="_self">
+                        <Link to="/">
                             <img src="./images/logo.png" alt="logo" />
-                        </a>
+                        </Link>
                     </SLogo>
                     <SLogo className="header__logo _dark">
                         <a href="" target="_self">

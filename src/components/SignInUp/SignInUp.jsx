@@ -4,7 +4,7 @@ import { GlobalStyle } from '../../App.styled';
 import { useContext, useState } from 'react';
 import { UserContext } from '../../context/ContextAPI';
 
-export const SingInUp = ({ isSignIn }) => {
+export const SignInUp = ({ isSignIn }) => {
     const { logIn, signUp } = useContext(UserContext);
 
     const navigate = useNavigate();
@@ -23,8 +23,8 @@ export const SingInUp = ({ isSignIn }) => {
 
     function isFieldsOk(data) {
         const errors = {
-            login: data.login?.length < 3,
-            password: data.password?.length < 8,
+            login: data.login?.length < 3 || data.login.includes(' '),
+            password: data.password?.length < 3 || data.password.includes(' '),
             name: data.name?.length < 3,
         };
 
@@ -40,7 +40,6 @@ export const SingInUp = ({ isSignIn }) => {
         const form = e.target;
         const login = form.login.value;
         const password = form.password.value;
-
 
         setFormData({ login, password, name: 'login' });
         if (!isFieldsOk({ login, password, name: 'login' })) return;
